@@ -36,6 +36,58 @@ margin = lean + national + coalition + operation
 
 State margin is the vote-weighted mean of its counties. A state within 0.6 points goes to whoever has the legal edge — the recount. Win probabilities are logistic in the margin with a scale that widens with lane volatility.
 
+## 3b. Your pollster
+
+The Chief Pollster slot is the one place with published outside numbers behind it.
+Every card names a firm in the **Silver Bulletin pollster ratings** (January 2026),
+and its OVR is derived from that firm's Predictive Plus-Minus rather than an
+editorial guess:
+
+```
+sbRating = 81 − 9.8 × predictivePlusMinus        (clipped to 58–95)
+OVR      = w · sbRating + (1 − w) · editorial     where w = polls / (polls + 15)
+```
+
+The reversion matters because Silver Bulletin rates *released public polls* in the
+last three weeks of a race, and campaign pollsters work mostly in private. Public
+Opinion Strategies has 80 rated polls; Fabrizio Lee has 11; brilliant corners has
+one. A rating built on one poll is noise, so thin samples fall back toward the
+card's editorial rating — the same move Silver Bulletin makes internally.
+
+Each firm's **house bias** then becomes a game mechanic. A firm whose published
+polls have historically overstated *your* side flatters you into spending in the
+wrong places; one that has been tough on your side keeps you running scared:
+
+```
+flatter = (side === 'D' ? +1 : −1) × houseBias
+polling = clamp(−flatter × 0.18, ±0.6)          margin points, everywhere
+```
+
+It is deliberately small — at most ±0.48 across the current pool, against ±2.8
+for the operation term — so it is a tiebreaker between two good pollsters, not a
+reason to hire the other party's. It does create one real draft decision: Cygnal
+is both the best-rated Republican firm (A, 58 polls) *and* carries a D+2.0 house
+lean, so it is worth +0.37 to a Republican war room. GQR is an A− with 62 polls
+but its D+2.2 lean costs a Democratic war room 0.39.
+
+## 3c. Firm ties
+
+Where a card owns or is a partner in another card's shop, the two are the same
+hire. Drafting either one **retains the whole firm** for that war room and takes
+the rest off the board for every team — the way a polling or media firm signs
+with one campaign in a race. Anna Greenberg is a partner at GQR, so you cannot
+hire both, and neither can anyone else once one of them is gone.
+
+Twenty-four firms are tied this way, from two-card pairs (GMMB and Jim Margolis,
+Civis Analytics and Dan Wagner) to three-card shops (Precision Strategies:
+Jen O'Malley Dillon, Stephanie Cutter and Teddy Goff; Crooked Media: Favreau,
+Pfeiffer and Vietor). Only ownership counts — sharing a former employer does
+not, or the nine people in this pool who worked on Trump 2024 would collapse
+into one pick.
+
+The bots price the lockout in: taking a partner is worth a little extra because
+it denies the shop to everyone else.
+
 ## 4. Head to head and the map
 
 Head to head is the same equation with every term differenced against the rival, so exactly one of them wins each state.
@@ -49,10 +101,15 @@ A tied popular vote is not a tied Electoral College on this map. Democrats have 
 | Preset | Popular vote | D wins head-to-head |
 |---|---|---|
 | Republican wave | R+2.0 | 0% |
-| Lean Republican | D+2.5 | 24% |
-| **Toss-up** | **D+3.5** | **50%** |
-| Lean Democratic | D+4.5 | 78% |
+| Lean Republican | D+2.5 | 15% |
+| **Toss-up** | **D+3.5** | **48%** |
+| Lean Democratic | D+4.5 | 76% |
 | Democratic wave | D+6.5 | 100% |
+
+This number moves whenever the pool does, which is why `npm run balance` exists.
+It went to D+4.0 when the pollster house-effect mechanic landed (Democratic
+firms in the Silver Bulletin data carry larger house biases, so Democratic war
+rooms eat more flattery) and back to D+3.5 when the pool grew to 312 names.
 
 ## 6. The draft score
 

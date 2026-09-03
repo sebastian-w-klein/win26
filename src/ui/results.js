@@ -7,6 +7,7 @@ import { BATTLEGROUNDS } from '../data/battlegrounds.js';
 import { scoreDraft, gradeFor, headToHead, simulate, prepare, ENVIRONMENTS, laneFit } from '../engine/scoring.js';
 import { leagueOpponent, encodeRoster } from '../engine/draft.js';
 import { renderMap, buildMapModel, assignColors } from './map.js';
+import { ratingOf, houseRead } from './pollster.js';
 
 export function renderResults(root, app, league, meIdx = 0) {
   const teams = league.teams.filter(t => t.lane).map(t => prepare(t));
@@ -73,6 +74,19 @@ export function renderResults(root, app, league, meIdx = 0) {
       h('div.section-title', h('h2', 'The map'), h('span.dim.small', entries.length > 2 ? 'Each county shaded for the war room that runs strongest there. Hover for every room’s share; search any county; switch to states.' : 'Shaded by how you run in each county against a generic opposing campaign.')),
       mapHost
     ),
+
+    (() => {
+      const poll = me.roster['chief-pollster'], r = ratingOf(poll), read = r && houseRead(r, me.lane.side);
+      return read && Math.abs(read.pts) >= 0.05 && h('div.section',
+        h('div.card.pad',
+          h('div.row', { style: { flexWrap: 'wrap', gap: '10px' } },
+            h('div.grow', h('div.label', 'Your pollster'),
+              h('div', { style: { fontWeight: 700, marginTop: '2px' } }, poll.name, ' · SB ', r.grade, ' · house ', (r.bias > 0 ? 'D+' : 'R+') + Math.abs(r.bias).toFixed(1)),
+              h('p.small.dim', { style: { marginTop: '4px' } }, read.why)),
+            h('div', { style: { textAlign: 'right' } }, h('div.label', 'Worth'),
+              h('div', { class: read.tone === 'good' ? 'good-text' : 'bad-text', style: { fontFamily: 'var(--display)', fontWeight: 800, fontSize: '26px', color: read.tone === 'good' ? 'var(--good)' : 'var(--bad)' } },
+                (read.pts > 0 ? '+' : '') + read.pts.toFixed(2)), h('div.tiny.dim', 'points, everywhere')))));
+    })(),
 
     h('div.section',
       h('div.section-title', h('h2', 'Election night'), h('span.dim.small', opponent ? `Run against this league’s average operation (rating ${opponent.toFixed(0)}). Margins in points.` : 'Run against a generic well-run opposing campaign. Margins in points.')),

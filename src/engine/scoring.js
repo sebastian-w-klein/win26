@@ -3,7 +3,7 @@
  * and head-to-head. See docs/SCORING.md.
  */
 import { simulate, rateRoster, prepare, K } from './sim.js';
-export { laneFit, effectiveRating, rateRoster, prepare, simulate, K, CAT_SHARE, COUNTIES, COUNTY_BY_FIPS } from './sim.js';
+export { laneFit, effectiveRating, rateRoster, prepare, simulate, pollingEdge, K, CAT_SHARE, COUNTIES, COUNTY_BY_FIPS } from './sim.js';
 
 /* ── national environment ─────────────────────────────────────────────────
  * The national popular-vote margin, D-positive. A tied vote is not a tied

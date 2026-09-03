@@ -6,7 +6,7 @@
  */
 import { ROLES, ROLE_BY_ID } from '../data/roles.js';
 import { LANES, LANE_BY_ID } from '../data/lanes.js';
-import { BY_ROLE, BY_ID, OPERATIVES, FORM_MULT } from '../data/operatives.js';
+import { BY_ROLE, BY_ID, OPERATIVES, FORM_MULT, FIRM_GROUPS } from '../data/operatives.js';
 import { laneFit, rateRoster } from './sim.js';
 import { envValue, DEFAULT_ENV, scoreDraft } from './scoring.js';
 
@@ -80,15 +80,34 @@ export function takenIds(league) {
   for (const t of league.teams) for (const p of Object.values(t.roster)) if (p && !p.free) set.add(p.id);
   return set;
 }
+
+/** Firm id -> the team that has retained it. Drafting a partner takes the shop. */
+export function retainedFirms(league) {
+  const map = new Map();
+  for (const t of league.teams)
+    for (const p of Object.values(t.roster)) if (p?.group && !map.has(p.group)) map.set(p.group, t);
+  return map;
+}
+export const retainedBy = (league, op) => (op?.group ? retainedFirms(league).get(op.group) ?? null : null);
+
+/** Everyone else locked out by a pick's firm tie. */
+export const firmMates = op =>
+  op?.group ? OPERATIVES.filter(p => p.group === op.group && p.id !== op.id) : [];
+
+const blocked = (league) => {
+  if (league.mode === 'solo') return () => false;
+  const taken = takenIds(league), firms = retainedFirms(league);
+  return p => taken.has(p.id) || (p.group && firms.has(p.group));
+};
+
 export function availableFor(league, roleId) {
-  if (league.mode === 'solo') return BY_ROLE[roleId];
-  const taken = takenIds(league);
-  return BY_ROLE[roleId].filter(p => !taken.has(p.id));
+  const no = blocked(league);
+  return BY_ROLE[roleId].filter(p => p.free || !no(p));
 }
 /** Everything the team could take right now, across its open slots. */
 export function availableForTeam(league, team) {
-  const taken = league.mode === 'solo' ? new Set() : takenIds(league);
-  return OPERATIVES.filter(p => !team.roster[p.role] && !taken.has(p.id));
+  const no = blocked(league);
+  return OPERATIVES.filter(p => !team.roster[p.role] && (p.free || !no(p)));
 }
 export function availableLanes(league) {
   const taken = new Set(league.teams.map(t => t.lane?.id).filter(Boolean));
@@ -118,7 +137,11 @@ export function pickOperative(league, team, operativeId) {
   const op = BY_ID[operativeId];
   if (!op) throw new Error(`unknown operative ${operativeId}`);
   if (team.roster[op.role]) throw new Error('slot filled');
-  if (!op.free && league.mode !== 'solo' && takenIds(league).has(op.id)) throw new Error('taken');
+  if (!op.free && league.mode !== 'solo') {
+    if (takenIds(league).has(op.id)) throw new Error('Already drafted.');
+    const holder = retainedFirms(league).get(op.group);
+    if (holder && holder.idx !== team.idx) throw new Error(`${FIRM_GROUPS[op.group].label} is retained by ${holder.name}.`);
+  }
   team.roster[op.role] = op;
   const rec = { n: pickNumber(league), round: league.round, teamIdx: team.idx, kind: 'op', id: op.id,
                 name: op.name, role: op.role, fit: laneFit(op, team.lane).label };
@@ -142,6 +165,8 @@ export function pickValue(op, lane, role, league, rand = Math.random) {
     // Scarcity: the last on-lane names in a heavy slot are worth reaching for.
     const onLaneLeft = availableFor(league, role.id).filter(p => p.lanes.includes(lane.id)).length;
     if (fit.label === 'On lane' && onLaneLeft <= 2) v += 4 * role.weight;
+    // Taking a partner also takes their shop off everyone else's board.
+    if (op.group) v += 1.5 * firmMates(op).length;
   }
   return v + (rand() - 0.5) * 5;
 }
