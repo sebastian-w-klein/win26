@@ -1,19 +1,20 @@
 # Publishes the game to GitHub Pages, so anyone with the URL can play a
 # practice draft in a browser with no account and nothing to install.
 #
-# Live leagues do NOT work here: syncing picks between browsers needs the
-# shared database that only exists on the published Claude artifact. This is
-# the practice-draft build.
+# Live leagues do NOT work here: syncing picks between browsers needs a shared
+# document store, which a static host cannot provide. This is the
+# practice-draft build.
 #
-# GitHub Pages has to be AVAILABLE for this repository before the first run:
-# it is free for public repos and needs a paid plan for private ones. On a
-# repository where it is not, the run fails at configure-pages with
+# Pages must be switched on once before the first run, at Settings -> Pages ->
+# Build and deployment -> Source: GitHub Actions. configure-pages below asks
+# for that itself, but a workflow's own token is usually not permitted to
+# create the Pages site, and the run then fails with
 # "Create Pages site failed: Resource not accessible by integration".
+# Setting the source by hand once clears it for good; after that the
+# enablement step finds the existing site and does nothing.
 #
-# The run normally turns Pages on itself. If that step fails on a repo where
-# Pages *is* available, set it by hand once at Settings -> Pages -> Build and
-# deployment -> Source: GitHub Actions, then re-run. It prints the URL when it
-# finishes.
+# The repository also has to be public, or on a plan that includes Pages for
+# private repos. It prints the URL when it finishes.
 #
 # To redeploy automatically on every push to main, uncomment the `push:` block.
 name: Deploy to GitHub Pages

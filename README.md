@@ -12,53 +12,17 @@ shows whose war room runs strongest where.
 
 ## Play it
 
-**Nothing to install, nothing to download.** It runs in a browser tab.
+**Nothing to install, nothing to download.** It runs in a browser tab:
 
-### With coworkers — live, up to 12 seats
+**→ https://sebastian-w-klein.github.io/win26/**
 
-**→ [Open the draft room](https://claude.ai/code/artifact/8cd5d8da-ddd2-49b1-868c-cbaa709f3694)**
+Pick **Practice draft** on the home screen and you are drafting against bots in
+a few seconds — no account, no login, nothing saved to your machine. A full
+22-round draft takes a few minutes.
 
-Type your name, create a league, and send that same link around. Seats are
-first-come; whoever is still missing when the commissioner starts the draft
-becomes a bot. Picks sync live, there's a chat box, and there's an optional pick
-clock with autopick so one person at lunch can't stall the room.
-
-Two things to know: the link is private until you share it from the page's
-share menu, and anyone you send it to needs a Claude account to open it. If
-that's a problem for your office, use the practice draft below or put the game
-on GitHub Pages.
-
-### Alone, against bots
-
-Same link — choose **Practice draft** on the home screen instead of creating a
-league. It runs entirely in your browser, needs no account, and a full 22-round
-draft against bots takes a few minutes.
-
-### On your own URL (GitHub Pages)
-
-The repo is a plain static site, so GitHub can host it for free at
-`https://sebastian-w-klein.github.io/win26/` — no account and no login for
-anyone who opens it. Practice drafts work there; live leagues don't, because
-the shared database that syncs picks between browsers only exists on the
-Claude link above.
-
-The workflow is already on `main`. What's left needs repository settings, which
-only the owner can change:
-
-1. **Settings → General → Danger Zone → Change visibility → Public.** Pages is
-   free only for public repositories. (On a paid GitHub plan you can skip this
-   and keep the repo private.)
-2. **Settings → Pages → Build and deployment → Source: GitHub Actions.** The
-   workflow tries to do this itself, so check here only if step 3 fails with
-   `Create Pages site failed`.
-3. **Actions → Deploy to GitHub Pages → Run workflow.** It prints the URL when
-   it finishes. Re-run it after any change you want live.
-
-Before flipping to public, know what becomes visible: the whole history, and
-that means 345 named real political professionals carrying invented OVR and
-cost numbers. The disclaimer above covers it, but it stops being a private
-joke at that point. The vendored Silver Bulletin ratings CSV in `data/raw/` is
-also worth a look against how you'd want to redistribute it publicly.
+Live 12-seat leagues — real-time picks, a pick clock, chat — are built and
+work, but they need a shared database that a static host cannot provide, so
+they are not running at that URL. See [Deploying](#deploying) for both builds.
 
 ## How a draft goes
 
@@ -88,12 +52,7 @@ the median name available to you up to the best one buys about six times more
 margin at slot 1 than at slot 18, so your first three rounds matter far more
 than your last three. Full table in [docs/SCORING.md](docs/SCORING.md).
 
-**The chief pollster is the one slot where the best name is the wrong pick.**
-Because house bias costs you more than the rating gain buys, hiring the
-highest-rated pollster on the board is worth slightly *less* than nothing. Draft
-the firm whose published polls have been hard on your own side.
-
-Two rules worth knowing before your first draft:
+Three rules worth knowing before your first draft:
 
 - **Firms come as a package.** Where one card owns or is a partner in another
   card's shop, they're a single hire — draft Anna Greenberg and you also get
@@ -102,6 +61,9 @@ Two rules worth knowing before your first draft:
   rival's alumni network.
 - **You can never be stuck.** If a slot runs dry, there's always a
   replacement-level free agent — competent, unremarkable, never drafted away.
+- **At chief pollster, the best name is the wrong pick.** A firm whose
+  published polls have flattered your own side costs you more margin than its
+  rating earns you. Draft the pollster who has been hard on your side.
 
 ### Election night
 
@@ -134,28 +96,6 @@ Elasticity isn't trivia — it multiplies everything a campaign controls. The sa
 field operation is worth seven times more in Webb County, Texas (2.50) than in
 Camden, New Jersey (0.35).
 
-## The pollster slot is graded on real data
-
-The Chief Pollster is the one slot scored against published measurements:
-**Silver Bulletin's January 2026 pollster ratings**, 540 firms deep. Each of the
-39 pollster cards names a real rated firm and carries its letter grade, how many
-polls it's rated on, its house bias, hit rate, average error, and the share of
-its polls that missed outside their own margin of error.
-
-A card's rating starts from the firm's Predictive Plus-Minus and is pulled back
-toward the card's editorial rating based on how thin the record is — campaign
-pollsters mostly poll privately, and some are rated on a handful of public
-releases.
-
-That makes depth of record the thing to draft for. Mason-Dixon is rated on 446
-polls, InsiderAdvantage on 208, Trafalgar on 143; at those counts the
-measurement is doing 91% or more of the work. At the other end, Big Data Poll is
-an F on six polls — the one card in the slot you should probably leave alone.
-
-House bias is a live mechanic, not flavor text. Hire a firm whose polls have
-historically flattered your own side and you lose margin everywhere, because a
-campaign that believes its own friendly numbers spends in the wrong states.
-
 ## What's real and what isn't
 
 **Real:** every name in the pool. All 345 are public political professionals,
@@ -182,7 +122,7 @@ It's a model, not a forecast.
 ```bash
 npm install
 npm run serve        # http://localhost:8127 — plays the source directly, no build step
-npm run build        # -> dist/standalone.html (one file) and dist/index.html (artifact body)
+npm run build        # -> dist/standalone.html (one file) and dist/index.html (embeddable body)
 npm run build:data   # regenerate the county tables from data/raw/
 npm run check        # parse every module
 npm run balance      # re-measure the environment presets
@@ -193,12 +133,38 @@ Where things live:
 ```
 src/data/         roles, lanes, the 345-name pool, generated county + state tables
 src/engine/       sim.js (counties → states → EV), scoring, draft order + bots
-src/net/          identity, LocalStore (practice) and SharedStore (live, on the artifact db)
+src/net/          identity, LocalStore (practice) and SharedStore (live, on the shared store)
 src/ui/           lobby, league room, draft room, results, the map
 tools/            build-counties.mjs, build.mjs, balance.mjs, check.sh
 data/raw/         vendored sources, see SOURCES.md
 docs/SCORING.md   every formula and constant, with its reasoning
 ```
 
-To update the live link after changing the game: `npm run build`, then republish
-`dist/index.html` to the same artifact URL.
+## Deploying
+
+`npm run build` produces two things, and which one you want depends on whether
+you need live leagues:
+
+| Build | Where it runs | Practice | Live leagues |
+|---|---|---|---|
+| the source tree (`index.html` + `src/` + `assets/`) | any static host, including GitHub Pages | yes | no |
+| `dist/standalone.html` | one file, opens from the filesystem | yes | no |
+| `dist/index.html` | a host that provides the shared-document runtime | yes | yes |
+
+**GitHub Pages** is wired up in `.github/workflows/pages.yml`. It copies the
+source tree into `_site` — there is no build step, because `index.html` loads
+`src/main.js` as an ES module and nothing fetches at runtime — and deploys it.
+Run it from **Actions → Deploy to GitHub Pages → Run workflow**, and re-run it
+after any change you want live.
+
+Pages has to be switched on once before the first run, at **Settings → Pages →
+Build and deployment → Source: GitHub Actions**. The workflow asks for this
+itself via `configure-pages`, but a workflow's own token is usually not allowed
+to create the Pages site, which fails as `Create Pages site failed: Resource not
+accessible by integration`. Setting the source by hand once clears it for good.
+
+**Live leagues** need `dist/index.html` hosted somewhere that provides the
+shared document store and presence channel `src/net/store.js` expects — see the
+`claude.use('db')` and `claude.use('room')` calls in `src/main.js`. Without
+that runtime the page still loads and practice drafts still work; the league
+routes just report that they cannot connect.
