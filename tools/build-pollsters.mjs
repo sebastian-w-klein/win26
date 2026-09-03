@@ -6,10 +6,11 @@
  *
  * Silver Bulletin rates RELEASED PUBLIC POLLS in the last three weeks of a
  * race. Campaign pollsters do most of their work privately and never enter
- * that database, so poll counts here range from 80 (Public Opinion Strategies)
- * down to 1 (brilliant corners). A rating built on one poll is noise, so each
- * firm's SB-derived rating is mean-reverted toward its editorial rating by
- * poll count — the same move Silver Bulletin makes on its own thin samples.
+ * that database, so poll counts here run from 446 (Mason-Dixon, which polls
+ * publicly for news outlets) down to 1 (brilliant corners, which does not).
+ * A rating built on one poll is noise, so each firm's SB-derived rating is
+ * mean-reverted toward its editorial rating by poll count — the same move
+ * Silver Bulletin makes on its own thin samples.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -71,7 +72,24 @@ export const FIRM_MAP = {
   'Victory Insights': 70,
   'co/efficient': 72,
   'Susquehanna Polling & Research Inc.': 78,
-  'Remington Research Group': 73
+  'Remington Research Group': 73,
+  // Rated firms the pool did not previously reach. Adding them takes the
+  // Chief Pollster slot from 26 cards to 38 and, more to the point, pulls in
+  // the deeply-rated firms — Mason-Dixon has 446 rated polls, InsiderAdvantage
+  // 208, Trafalgar 143 — where the Silver Bulletin number carries almost all
+  // the weight and the editorial guess almost none.
+  'OnMessage Inc.': 82,
+  'Moore Information Group': 74,
+  'EMC Research': 73,
+  'Grove Insight': 72,
+  'FM3 Research': 75,
+  'Wick': 72,
+  'Trafalgar Group': 70,
+  'InsiderAdvantage': 70,
+  'RMG Research': 70,
+  'Big Data Poll': 64,
+  'Selzer': 84,
+  'Mason-Dixon Polling & Strategy': 80
 };
 
 // Predictive Plus-Minus is Silver Bulletin's forward-looking accuracy estimate;
@@ -94,6 +112,13 @@ for (const [firm, editorial] of Object.entries(FIRM_MAP)) {
     bias: r.bias === '' ? 0 : +(+r.bias).toFixed(2),      // + = leans Democratic
     called: r.called === '' ? null : Math.round(+r.called * 100),
     err: r.avgErr === '' ? null : +(+r.avgErr).toFixed(1),
+    // Share of rated polls whose result landed outside the poll's own margin
+    // of error — the cleanest published read on whether a firm's confidence
+    // is earned.
+    miss: r.outMOE === '' ? null : Math.round(+r.outMOE * 100),
+    // Advanced Plus-Minus: measured past accuracy against the field, before
+    // Silver Bulletin projects it forward into the predictive number.
+    apm: r.advPM === '' ? null : +(+r.advPM).toFixed(2),
     aapor: r.aapor === 'yes', banned: r.banned === 'yes',
     ovr
   };
@@ -113,6 +138,8 @@ writeFileSync(resolve(root, 'src/data/pollster-ratings.js'),
 //         Democratic performance
 // called  share of races where the firm called the winner
 // err     average error on the margin, in points
+// miss    share of rated polls that landed outside their own margin of error
+// apm     Advanced Plus-Minus: measured past accuracy, negative is better
 // ovr     gameplay rating: the ppm-derived rating reverted toward the card's
 //         editorial rating by poll count
 

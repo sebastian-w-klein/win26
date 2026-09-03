@@ -25,6 +25,11 @@ export const K = {
   Z_CLIP: 2.5,           // demographics are clipped this many SDs from the mean
   OPS_SCALE: 0.20,       // margin points per point of unit rating over the opponent
   EMPHASIS_POWER: 3,     // how sharply a state's emphasis multipliers bite
+  ELASTICITY: 0.5,       // how much of a county's measured elasticity to apply.
+                         // 1.0 would take the raw four-cycle number literally,
+                         // which swings campaign effects 7:1 between the most
+                         // and least movable counties. Half of it keeps the
+                         // ordering and softens the tail.
   PROB_BASE: 1.6, PROB_VOL: 0.40,   // county logistic scale = base + vol × volatility
   STATE_PROB_BASE: 1.2, STATE_PROB_VOL: 0.30,
   POLL_BIAS: 0.08,       // margin points per point of your pollster's house bias.
@@ -46,7 +51,13 @@ const UNIT_SPEC_MAP = {
   turnout: 'FIELD', persuasion: 'COMMS', 'earned-media': 'COMMS', 'small-dollar': 'FINANCE',
   bigmoney: 'FINANCE', viral: 'DIGITAL', analytics: 'TECH', ops: 'OPS', legal: 'FLOATER'
 };
-const AXIS_SPEC_MAP = { union: 'union', suburban: 'college', latino: 'latino', black: 'black', rural: 'rural', young: 'young', senior: 'senior' };
+const AXIS_SPEC_MAP = {
+  union: 'union', suburban: 'college', latino: 'latino', black: 'black', rural: 'rural',
+  young: 'young', senior: 'senior',
+  noncollege: 'ncwhite',   // organizers and admen who work non-college white turf
+  affluent: 'income',      // the donor-and-suburb operation
+  outsider: 'protest'      // people who can talk to voters who have quit both parties
+};
 
 /* ── counties, z-scored once ────────────────────────────────────────────── */
 const clip = v => Math.max(-K.Z_CLIP, Math.min(K.Z_CLIP, v));
@@ -59,10 +70,20 @@ export const COUNTIES = COUNTY_ROWS.map(r => {
     rural:   clip((r[8] - AXIS_STATS.rural.mean) / AXIS_STATS.rural.sd),
     young:   clip((r[9] - AXIS_STATS.young.mean) / AXIS_STATS.young.sd),
     senior:  clip((r[10] - AXIS_STATS.senior.mean) / AXIS_STATS.senior.sd),
+    ncwhite: clip((r[11] - AXIS_STATS.ncwhite.mean) / AXIS_STATS.ncwhite.sd),
+    income:  clip((r[12] - AXIS_STATS.income.mean) / AXIS_STATS.income.sd),
+    protest: clip((r[13] - AXIS_STATS.protest.mean) / AXIS_STATS.protest.sd),
     union:   clip((st.union - AXIS_STATS.union.mean) / AXIS_STATS.union.sd)
   };
-  return { fips: r[0], name: r[1], st: r[2], lean: r[3], votes: r[4], z,
-           demo: { college: r[5], latino: r[6], black: r[7], rural: r[8], young: r[9], senior: r[10], union: st.union } };
+  // Elasticity is measured, not assumed: it is how far this county's lean has
+  // moved from cycle to cycle across 2012, 2016, 2020 and 2024, normalized so
+  // the vote-weighted national county is exactly 1.00. K.ELASTICITY decides how
+  // literally to take it.
+  const elastic = 1 + K.ELASTICITY * (r[14] - 1);
+  return { fips: r[0], name: r[1], st: r[2], lean: r[3], votes: r[4], z, elastic,
+           demo: { college: r[5], latino: r[6], black: r[7], rural: r[8], young: r[9], senior: r[10],
+                   ncwhite: r[11], income: r[12], protest: r[13], elasticity: r[14],
+                   drift: r[15], growth: r[16], rucc: r[17], union: st.union } };
 });
 export const COUNTY_BY_FIPS = Object.fromEntries(COUNTIES.map(c => [c.fips, c]));
 const COUNTIES_BY_STATE = {};
@@ -184,9 +205,14 @@ export function simulate(team, { env = 0, opponent = K.OPPONENT, shift = 0, vs =
     let coalition = 0;
     for (let j = 0; j < AXES.length; j++) coalition += appeal[j] * c.z[AXES[j]];
     coalition *= K.COUNTY_AXIS;
+    // Everything a campaign controls — who its coalition is, how good its
+    // operation is, whose polls it believes — lands harder in a county whose
+    // voters have actually been moving, and barely registers in one that has
+    // voted the same way for four cycles.
     const ops = (T.ops[c.st] - (V ? V.ops[c.st] : opponent)) * K.OPS_SCALE;
-    const margin = sign * c.lean + national + coalition + ops + polling;
-    counties[i] = { c, margin, p: logistic(margin, sCounty), coalition, ops };
+    const campaign = (coalition + ops + polling) * c.elastic;
+    const margin = sign * c.lean + national + campaign;
+    counties[i] = { c, margin, p: logistic(margin, sCounty), coalition: coalition * c.elastic, ops: ops * c.elastic };
     const s = (stateAgg[c.st] ||= { m: 0, w: 0, coal: 0, ops: 0 });
     s.m += margin * c.votes; s.w += c.votes; s.coal += coalition * c.votes; s.ops += ops * c.votes;
   }

@@ -15,7 +15,7 @@ export const ENVIRONMENTS = [
   { id: 'r-wave', label: 'Republican wave', value: -2.0 },
   { id: 'lean-r', label: 'Lean Republican', value:  2.5 },
   { id: 'tossup', label: 'Toss-up',         value:  3.5 },
-  { id: 'lean-d', label: 'Lean Democratic', value:  4.5 },
+  { id: 'lean-d', label: 'Lean Democratic', value:  5.0 },
   { id: 'd-wave', label: 'Democratic wave', value:  6.5 }
 ];
 for (const e of ENVIRONMENTS) e.sub = (e.value < 0 ? 'R+' : 'D+') + Math.abs(e.value).toFixed(1) + ' popular vote';

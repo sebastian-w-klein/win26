@@ -165,7 +165,7 @@ input, select { font-family: inherit; font-size: inherit; color: inherit; }
 .lane .tag { font-size: 13px; color: var(--ink-dim); font-style: italic; }
 .lane .blurb { font-size: 13px; color: var(--ink-dim); }
 .axes { display: grid; gap: 3px; margin-top: 2px; }
-.axis-row { display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: center; }
+.axis-row { display: grid; grid-template-columns: 82px 1fr; gap: 8px; align-items: center; }
 .axis-row span { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint); }
 .axis-bar { position: relative; height: 6px; background: var(--surface-3); border-radius: 2px; }
 .axis-bar::before { content: ''; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--line-2); }
@@ -294,6 +294,7 @@ table.tbl tr.me td { background: var(--accent-soft); }
 .map-tip.pinned { pointer-events: auto; }
 .map-tip h4 { font-family: var(--sans); font-size: 14px; font-weight: 700; }
 .map-tip .sub { font-size: 11px; color: var(--ink-dim); margin-bottom: 6px; }
+.map-tip .sub + .sub { margin-top: -4px; font-family: var(--mono); font-size: 10px; letter-spacing: -0.01em; }
 .map-tip .trow { display: grid; grid-template-columns: 10px 1fr auto; gap: 6px; align-items: center; font-size: 12px; padding: 2px 0; }
 .map-tip .trow i { width: 10px; height: 10px; border-radius: 2px; display: block; }
 .map-tip .trow .p { font-family: var(--mono); font-variant-numeric: tabular-nums; }

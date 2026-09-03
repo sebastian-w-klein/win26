@@ -45,7 +45,8 @@ export function pollsterDetail(op, side) {
       stat('Rated polls', r.polls, 'Public polls in the Silver Bulletin database'),
       stat('House bias', biasLabel(r.bias), 'Positive means the firm has historically overstated Democratic performance'),
       r.polls >= 8 && r.called != null ? stat('Called', r.called + '%', 'Share of rated races where the firm picked the winner') : null,
-      r.polls >= 8 && r.err != null ? stat('Avg error', r.err, 'Average error on the margin, in points') : null
+      r.polls >= 8 && r.err != null ? stat('Avg error', r.err, 'Average error on the margin, in points') : null,
+      r.polls >= 8 && r.miss != null ? stat('Outside MOE', r.miss + '%', 'Share of rated polls whose result landed outside the poll’s own margin of error') : null
     ),
     read && h('p.tiny', { style: { marginTop: '8px', color: 'var(--ink-dim)' } },
       read.why, ' ',
