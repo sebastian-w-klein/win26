@@ -1,0 +1,53 @@
+# Publishes the game to GitHub Pages, so anyone with the URL can play a
+# practice draft in a browser with no account and nothing to install.
+#
+# Live leagues do NOT work here: syncing picks between browsers needs the
+# shared database that only exists on the published Claude artifact. This is
+# the practice-draft build.
+#
+# Before the first run, GitHub Pages has to be available for this repository:
+# it is free for public repos, and needs a paid plan for private ones. Then run
+# this workflow once from the Actions tab; it prints the URL when it finishes.
+#
+# To redeploy automatically on every push to main, uncomment the `push:` block.
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; let a newer one win.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # The site is the source tree itself -- index.html loads src/main.js as an
+      # ES module, so there is nothing to compile. Copy only what the page needs.
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r src assets _site/
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4

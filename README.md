@@ -1,51 +1,171 @@
 # War Room Draft 2028
 
-Fantasy football, but for the people who run presidential campaigns — built to be played live with up to twelve coworkers on one link.
+Fantasy football, except you draft the campaign instead of the candidate.
 
-You draft an **ideological lane** and then **21 real operatives, strategists and firms**, one for every slot on the staff card. Every roster is then run through **all 3,142 counties** in the country, and the results map shows which war room runs strongest in each one.
+You and up to eleven other people each build a presidential war room: first you
+pick an ideological lane, then you draft 21 real operatives — the pollster, the
+ad maker, the field director, the lawyer — one for every slot on the staff card.
+When the board is empty, all 3,142 counties in the country vote, and the map
+shows whose war room runs strongest where.
 
 ![The draft room](docs/board.png)
 
-## Playing
+## Play it
 
-**Live league** (up to 12 seats): open the published artifact, put in your name, create a league, and send the link around. Seats are claimed first-come; empty seats become bots when the commissioner starts. Picks sync in real time, with an optional pick clock and autopick.
+**Nothing to install, nothing to download.** It runs in a browser tab.
 
-**Practice draft**: you against bots. Works anywhere, including GitHub Pages and the standalone file.
+### With coworkers — live, up to 12 seats
+
+**→ [Open the draft room](https://claude.ai/code/artifact/8cd5d8da-ddd2-49b1-868c-cbaa709f3694)**
+
+Type your name, create a league, and send that same link around. Seats are
+first-come; whoever is still missing when the commissioner starts the draft
+becomes a bot. Picks sync live, there's a chat box, and there's an optional pick
+clock with autopick so one person at lunch can't stall the room.
+
+Two things to know: the link is private until you share it from the page's
+share menu, and anyone you send it to needs a Claude account to open it. If
+that's a problem for your office, use the practice draft below or put the game
+on GitHub Pages.
+
+### Alone, against bots
+
+Same link — choose **Practice draft** on the home screen instead of creating a
+league. It runs entirely in your browser, needs no account, and a full 22-round
+draft against bots takes a few minutes.
+
+### On your own URL (GitHub Pages)
+
+The repo is a plain static site, so GitHub can host it for free at
+`https://sebastian-w-klein.github.io/win26/` — no account and no login for
+anyone who opens it. Practice drafts work there; live leagues don't, because
+the shared database that syncs picks between browsers only exists on the
+Claude link above.
+
+Two steps, both in the GitHub web UI:
+
+1. **Settings → General → Change visibility → Public.** Pages is free only for
+   public repositories. (On a paid GitHub plan you can skip this and keep the
+   repo private.)
+2. **Actions → Deploy to GitHub Pages → Run workflow.** It prints the URL when
+   it finishes. Re-run it after any change you want live.
+
+## How a draft goes
+
+### Round 1 — pick a lane
+
+Twelve lanes, six per party, and no two war rooms can share one. Your lane is
+the biggest decision you make: it sets your national ceiling, decides which
+voters you over- and under-perform with across ten measured groups (union
+households, college grads, rural voters, under-30s, non-college white voters,
+and five more), and determines which operatives count as *on lane* for you.
+
+### Rounds 2–22 — fill the staff card
+
+The order snakes. On the clock, you take any operative whose slot you still have
+open, and the pool is 345 names deep.
+
+Every pick gets multiplied by how well the person fits your lane: **1.10** on
+lane, **0.92** for the right party but the wrong faction, **0.62** across party
+lines. A brilliant hire who doesn't believe in your campaign is worth less than
+a good one who does.
+
+Two rules worth knowing before your first draft:
+
+- **Firms come as a package.** Where one card owns or is a partner in another
+  card's shop, they're a single hire — draft Anna Greenberg and you also get
+  GQR, and both leave the board for everyone else. Twenty-six shops work this
+  way. Merely sharing a former employer doesn't count; anyone can hire out of a
+  rival's alumni network.
+- **You can never be stuck.** If a slot runs dry, there's always a
+  replacement-level free agent — competent, unremarkable, never drafted away.
+
+### Election night
+
+Your 21 hires become ten unit ratings and a coalition profile, and that gets run
+through every county in the country. States are the vote-weighted sum of their
+counties, and the Electoral College is the sum of the states. In a live league
+you run against the field's own average, plus a true head-to-head against every
+rival on the other side.
+
+## The map
+
+Every county is shaded for whichever war room runs strongest in it. Hover for
+each room's share of that county, search any county or state by name, or switch
+to the state view for the same thing aggregated up.
+
+County leans are the average of the 2020 and 2024 presidential results relative
+to the national vote — the way Cook computes PVI — and they land within about a
+point of Cook's published state numbers.
+
+The hover also carries three numbers measured across four presidential cycles
+rather than two:
+
+| | what it means |
+|---|---|
+| **Elasticity** | how much the county swings from cycle to cycle, with 1.00 as the national average |
+| **Drift** | where twelve years have moved it |
+| **Third-party share** | how much of the vote goes elsewhere |
+
+Elasticity isn't trivia — it multiplies everything a campaign controls. The same
+field operation is worth seven times more in Webb County, Texas (2.50) than in
+Camden, New Jersey (0.35).
+
+## The pollster slot is graded on real data
+
+The Chief Pollster is the one slot scored against published measurements:
+**Silver Bulletin's January 2026 pollster ratings**, 540 firms deep. Each of the
+39 pollster cards names a real rated firm and carries its letter grade, how many
+polls it's rated on, its house bias, hit rate, average error, and the share of
+its polls that missed outside their own margin of error.
+
+A card's rating starts from the firm's Predictive Plus-Minus and is pulled back
+toward the card's editorial rating based on how thin the record is — campaign
+pollsters mostly poll privately, and some are rated on a handful of public
+releases.
+
+That makes depth of record the thing to draft for. Mason-Dixon is rated on 446
+polls, InsiderAdvantage on 208, Trafalgar on 143; at those counts the
+measurement is doing 91% or more of the work. At the other end, Big Data Poll is
+an F on six polls — the one card in the slot you should probably leave alone.
+
+House bias is a live mechanic, not flavor text. Hire a firm whose polls have
+historically flattered your own side and you lose margin everywhere, because a
+campaign that believes its own friendly numbers spends in the wrong states.
+
+## What's real and what isn't
+
+**Real:** every name in the pool. All 345 are public political professionals,
+firms or organizations, and the credit line on each card is public record.
+
+**Invented:** all the ratings. OVR, cost and spec tags are gameplay numbers
+tuned so the draft plays well. They are not an assessment of anyone's ability,
+and nobody in the pool has anything to do with this game.
+
+**Measured, with its sourcing:** county margins for 2024 and 2020 come from the
+county results files, 2016 and 2012 from MIT Election Lab, and elasticity, drift
+and third-party share are derived from those four cycles. County demographics —
+including the non-college white share and median household income the two newest
+axes run on — come from the Census via MIT Election Lab, and are about a decade
+old even though the vote data is current. Alaska has no county-level source at
+all and falls back to statewide values. State union membership is the one
+hand-entered number in the build and the weakest data in it; `data/raw/SOURCES.md`
+explains why and what fixing it would take.
+
+It's a model, not a forecast.
+
+## Working on it
 
 ```bash
 npm install
-npm run build:data   # regenerate county data from data/raw/
-npm run build        # -> dist/standalone.html (single file) and dist/index.html (artifact body)
+npm run serve        # http://localhost:8127 — plays the source directly, no build step
+npm run build        # -> dist/standalone.html (one file) and dist/index.html (artifact body)
+npm run build:data   # regenerate the county tables from data/raw/
 npm run check        # parse every module
 npm run balance      # re-measure the environment presets
 ```
 
-## The draft
-
-**Round 1 — the lane.** Twelve lanes, six per side, exclusive. Your lane sets your national ceiling, decides which voters you over- and under-perform with across **ten measured electorate axes**, and determines which operatives are *on lane*.
-
-**Firm ties.** Where a card owns or is a partner in another card's shop, they are
-one hire: drafting Anna Greenberg retains GQR, and both come off the board for
-everybody. Twenty-six shops work this way. Sharing a former employer doesn't
-count — anyone can hire from a rival's alumni.
-
-**Rounds 2–22 — any open slot.** Whoever is on the clock takes any operative whose slot they still have open; the order snakes. Every pick is multiplied by lane fit: on lane 1.10, right party but wrong faction 0.92, cross-party 0.62. When a slot runs dry there is always a replacement-level **free agent**.
-
-**Election night.** Ten unit ratings and a coalition profile per roster, run through every county. States are the vote-weighted sum of their counties; the Electoral College is the sum of the states. In a league the opposing operation is the field's own average, and every rival on the other side gets a true head-to-head.
-
-## The map
-
-Each county is shaded for the war room that runs strongest there. Hover for every room's share (a softmax over each room's county margin, so the shares sum to 100%), search any county or state, and switch to the state view to see the same thing aggregated. County leans are the average of the 2020 and 2024 presidential results relative to the national vote — the way Cook computes PVI — and reproduce Cook's published state values within about a point.
-
-The hover also carries three numbers the build measures across **four**
-presidential cycles rather than two: **elasticity**, how far the county's lean
-has moved from cycle to cycle since 2012 with 1.00 as the national average;
-**drift**, where those twelve years have taken it; and its **third-party share**.
-Elasticity is not decoration — it multiplies everything a campaign controls, so
-the same field operation is worth more in Webb County, Texas (2.50) than in
-Camden, New Jersey (0.35).
-
-## Repository
+Where things live:
 
 ```
 src/data/         roles, lanes, the 345-name pool, generated county + state tables
@@ -57,28 +177,5 @@ data/raw/         vendored sources, see SOURCES.md
 docs/SCORING.md   every formula and constant, with its reasoning
 ```
 
-## The pollsters
-
-The Chief Pollster slot is graded on real data: **Silver Bulletin's January 2026
-pollster ratings**, 540 firms deep. Each of the 39 pollster cards names a rated
-firm and carries its letter grade, rated poll count, house bias, hit rate,
-average error and the share of its polls that landed outside their own margin of
-error. OVR comes from the firm's Predictive Plus-Minus, mean-reverted toward the
-card's editorial rating by poll count, because campaign pollsters mostly poll
-privately and some are rated on a handful of public releases.
-
-Twelve of those cards are new, and the point of them is depth of record:
-Mason-Dixon is rated on 446 polls, InsiderAdvantage on 208, Trafalgar on 143.
-At those counts the reversion weight is 0.91 or better, so the rating is the
-measurement and almost nothing else. At the other end, Big Data Poll is an F on
-six polls — the one card in the slot you should not draft.
-
-House bias is a mechanic, not decoration: hiring a firm whose polls have
-historically flattered your own side costs you margin everywhere, because a
-campaign that believes them spends in the wrong states.
-
-## About the data
-
-Everyone in the pool is a real, public political professional, firm or organization; the credit line on every card is public record. **The ratings are not.** OVR, cost and spec tags are invented gameplay numbers tuned so the draft plays well — not an assessment of anyone's ability — and no one in the pool has anything to do with this game.
-
-What *is* measured, and where it comes from: county margins for 2024 and 2020 from the county results files, 2016 and 2012 from MIT Election Lab, and every county's elasticity, drift and third-party share derived from those four cycles. County demographics — including the non-college white share and median household income the two newest axes run on — come from the Census via MIT Election Lab, and are a decade old even though the vote data is current. Alaska has no county-level source at all and falls back to statewide values. State union membership is the one hand-entered number in the build and the weakest data in it; `data/raw/SOURCES.md` says why and what it would take to fix. Everything here is a model, not a forecast.
+To update the live link after changing the game: `npm run build`, then republish
+`dist/index.html` to the same artifact URL.
