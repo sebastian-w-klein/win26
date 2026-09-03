@@ -80,6 +80,17 @@ lane, **0.92** for the right party but the wrong faction, **0.62** across party
 lines. A brilliant hire who doesn't believe in your campaign is worth less than
 a good one who does.
 
+**The slots are not worth the same.** The campaign manager alone is 10.7% of
+your operation — roughly four press secretaries — because everything the other
+twenty people do passes through their decisions. Below them sit the six slots
+that own an engine — message, money, air war, ground war: chief strategist,
+national field director, communications director, digital director, finance
+director, paid media. Then the five that multiply an engine without owning it.
+Then the nine whose failures stay inside one department. Upgrading from a
+median name to the best available buys twenty-one times more margin at campaign
+manager than at creative director, so your first three rounds matter far more
+than your last three. Full table in [docs/SCORING.md](docs/SCORING.md).
+
 Two rules worth knowing before your first draft:
 
 - **Firms come as a package.** Where one card owns or is a partner in another

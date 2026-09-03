@@ -19,7 +19,33 @@ Form is whether they won or lost their most recent cycle (×1.025 / ×0.975), de
 
 ## 2. Picks become ten unit ratings and a coalition profile
 
-Each slot feeds its category weighted by slot weight (Campaign Manager 1.6 … Deputy Field Director 1.0). Empty slots score at 70. Unit spec tags add 2.4 to their category; axis tags (`union`, `latino`, `rural`, …) move the roster's coalition appeal on that axis.
+Each slot feeds its category weighted by slot weight. Empty slots score at 70. Unit spec tags add 2.4 to their category, scaled by the slot's share of that category; axis tags (`union`, `latino`, `rural`, …) move the roster's coalition appeal on that axis.
+
+### What a slot is worth
+
+Slot weight does two jobs that cancel — a slot's share of its category's unit
+rating, and (because a category's share of the whole is the sum of its slots'
+weights) that category's share of the roster. So a slot's pull on the final
+margin is exactly `weight / 28.0`. The table is anchored on what a bad hire
+costs a presidential campaign, not on how senior the title sounds:
+
+| | Slots | Weight | Share |
+|---|---|---|---|
+| Runs the whole operation | Campaign Manager | 3.0 | 10.7% |
+| Owns an engine — message, money, air war, ground war | Chief Strategist 2.2, National Field 2.0, Comms 1.8, Digital 1.8, Finance 1.7, Paid Media 1.6 | 1.6–2.2 | 5.7–7.9% |
+| Multiplies an engine | Chief Pollster 1.5, Data 1.4, Political 1.2, Senior Adviser 1.1, Research 1.1 | 1.1–1.5 | 3.9–5.4% |
+| Contained inside one department | Rapid Response and New Media 1.0, Creative and Operations 0.9, Deputy CM, Deputy Field and General Counsel 0.8, Press Secretary and Policy 0.7 | 0.7–1.0 | 2.5–3.6% |
+
+Measured: upgrading a slot from the median name in its pool to the best one,
+averaged over all twelve lanes with the coalition channel held fixed, buys
+0.216 margin points at Campaign Manager and 0.010 at Creative Director — a
+21:1 spread, against 1.6:1 in the table this replaced.
+
+Two known ceilings. The single-slot categories (Finance, Ops, Policy, Research,
+Tech) are that one person's rating, so a 90-plus OVR on-lane pick there clips
+against the 100 cap and the very top of those benches is flatter than the OVR
+gap suggests. And the General Counsel's weight understates the slot, because the
+recount rule in §5 pays out separately from the unit rating.
 
 There are ten axes, seven of them original and three added in the second data
 pass, each backed by a county-level measurement:
@@ -159,26 +185,34 @@ Head to head is the same equation with every term differenced against the rival,
 
 The map's per-room shares are a softmax over each room's county margin (temperature 2.5 points), so they sum to 100% across the room and same-side rosters split a county by how strongly each actually runs there.
 
-## 5. Why the toss-up preset is D+3.5
+## 5. Why the toss-up preset is D+4.0
 
-A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+3.5:
+A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+4.0:
 
 | Preset | Popular vote | D wins head-to-head |
 |---|---|---|
-| Republican wave | R+2.0 | 0% |
-| Lean Republican | D+2.5 | 13% |
-| **Toss-up** | **D+3.5** | **49%** |
-| Lean Democratic | D+5.0 | 73% |
-| Democratic wave | D+6.5 | 100% |
+| Republican wave | R+1.5 | 0% |
+| Lean Republican | D+3.0 | 19% |
+| **Toss-up** | **D+4.0** | **49%** |
+| Lean Democratic | D+5.0 | 70% |
+| Democratic wave | D+7.0 | 100% |
 
-This number moves whenever the pool does, which is why `npm run balance` exists.
-It went to D+4.0 when the pollster house-effect mechanic landed (Democratic
-firms in the Silver Bulletin data carry larger house biases, so Democratic war
-rooms eat more flattery) and back to D+3.5 when the pool grew to 312 names. The
-second data pass — three new axes, the elasticity multiplier, and 45 more cards
-— left the coin flip where it was but flattened the curve either side of it,
-which is why Lean Democratic moved from D+4.5 to D+5.0: at D+4.5 it was winning
-52% of head-to-heads and reading as a second toss-up.
+This number moves whenever the pool or the weighting does, which is why
+`npm run balance` exists. It went to D+4.0 when the pollster house-effect
+mechanic landed (Democratic firms in the Silver Bulletin data carry larger
+house biases, so Democratic war rooms eat more flattery) and back to D+3.5 when
+the pool grew to 312 names. The second data pass — three new axes, the
+elasticity multiplier, and 45 more cards — left the coin flip where it was but
+flattened the curve either side of it, which is why Lean Democratic moved from
+D+4.5 to D+5.0.
+
+Re-weighting the slots moved it back to D+4.0. Concentrating value in the
+command slots helps Republican lanes slightly more than Democratic ones — their
+on-lane strategists and field directors sit higher in the pool — so the whole
+curve shifted about half a point right and every preset shifted with it to keep
+its label honest. The head-to-head gap at the toss-up also tightened, from a
+median of 42 electoral votes to 36: when one slot is worth three of another,
+drafts diverge less.
 
 ## 6. The draft score
 

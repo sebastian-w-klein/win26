@@ -18,8 +18,12 @@ export const K = {
   REPLACEMENT: 70,       // rating an empty slot is scored at
   OPPONENT: 90,          // unit rating of a generic well-run opposing campaign
   ON_LANE: 1.10, SAME_SIDE: 0.92, MERCENARY: 1.00, CROSS_PARTY: 0.62,
-  UNIT_SPEC: 2.4,        // unit bonus per matching spec tag
-  AXIS_SPEC: 0.16,       // axis appeal per matching spec tag, before role weight
+  UNIT_SPEC: 2.4,        // unit bonus per matching spec tag, at an even slot
+  AXIS_SPEC: 0.14,       // axis appeal per matching spec tag, before role weight.
+                         // Scaled with the weight table: axis appeal is
+                         // multiplied by role.weight, whose mean went 1.16 ->
+                         // 1.33, so this came down to hold the average tag's
+                         // coalition pull where it was.
   AXIS_CAP: 2.0,         // most a roster can move one axis
   COUNTY_AXIS: 0.55,     // margin points per (appeal × z-score) in a county
   Z_CLIP: 2.5,           // demographics are clipped this many SDs from the mean
@@ -43,9 +47,22 @@ export const K = {
 
 const CAT_IDS = Object.keys(CATEGORIES);
 const TOTAL_WEIGHT = ROLES.reduce((s, r) => s + r.weight, 0);
-export const CAT_SHARE = Object.fromEntries(
-  CAT_IDS.map(c => [c, ROLES.filter(r => r.cat === c).reduce((s, r) => s + r.weight, 0) / TOTAL_WEIGHT])
-);
+const CAT_WEIGHT = Object.fromEntries(
+  CAT_IDS.map(c => [c, ROLES.filter(r => r.cat === c).reduce((s, r) => s + r.weight, 0)]));
+export const CAT_SHARE = Object.fromEntries(CAT_IDS.map(c => [c, CAT_WEIGHT[c] / TOTAL_WEIGHT]));
+
+/**
+ * How much one slot's spec tag counts inside its own unit, relative to an even
+ * split of that unit. K.UNIT_SPEC used to be flat, which quietly overrode the
+ * weight table: a tag was worth 2.4 unit points whether it came from the
+ * campaign manager or the press secretary, while a 12-point OVR upgrade at the
+ * campaign manager only moved COMMAND by 3.7. Upgrading a slot could therefore
+ * make a roster WORSE if the better operative happened to carry one tag fewer,
+ * which is exactly what the deputy CM and creative director slots did.
+ */
+const CAT_COUNT = Object.fromEntries(CAT_IDS.map(c => [c, ROLES.filter(r => r.cat === c).length]));
+export const SPEC_SHARE = Object.fromEntries(
+  ROLES.map(r => [r.id, r.weight / CAT_WEIGHT[r.cat] * CAT_COUNT[r.cat]]));
 
 const UNIT_SPEC_MAP = {
   turnout: 'FIELD', persuasion: 'COMMS', 'earned-media': 'COMMS', 'small-dollar': 'FINANCE',
@@ -125,7 +142,8 @@ export function rateRoster(roster, lane) {
     slots.push({ role, pick, fit, eff });
     if (!pick) continue;
     for (const tag of pick.specs) {
-      const cat = UNIT_SPEC_MAP[tag]; if (cat) bonus[cat] += K.UNIT_SPEC * Math.min(1, fit.mult);
+      const cat = UNIT_SPEC_MAP[tag];
+      if (cat) bonus[cat] += K.UNIT_SPEC * SPEC_SHARE[role.id] * Math.min(1, fit.mult);
       const axis = AXIS_SPEC_MAP[tag]; if (axis) axisAdd[axis] += K.AXIS_SPEC * role.weight * fit.mult;
     }
   }

@@ -12,11 +12,11 @@ export { laneFit, effectiveRating, rateRoster, prepare, simulate, pollingEdge, K
  * Values are set by tools/balance.mjs.
  */
 export const ENVIRONMENTS = [
-  { id: 'r-wave', label: 'Republican wave', value: -2.0 },
-  { id: 'lean-r', label: 'Lean Republican', value:  2.5 },
-  { id: 'tossup', label: 'Toss-up',         value:  3.5 },
+  { id: 'r-wave', label: 'Republican wave', value: -1.5 },
+  { id: 'lean-r', label: 'Lean Republican', value:  3.0 },
+  { id: 'tossup', label: 'Toss-up',         value:  4.0 },
   { id: 'lean-d', label: 'Lean Democratic', value:  5.0 },
-  { id: 'd-wave', label: 'Democratic wave', value:  6.5 }
+  { id: 'd-wave', label: 'Democratic wave', value:  7.0 }
 ];
 for (const e of ENVIRONMENTS) e.sub = (e.value < 0 ? 'R+' : 'D+') + Math.abs(e.value).toFixed(1) + ' popular vote';
 export const DEFAULT_ENV = 'tossup';

@@ -7,7 +7,7 @@
 import { ROLES, ROLE_BY_ID } from '../data/roles.js';
 import { LANES, LANE_BY_ID } from '../data/lanes.js';
 import { BY_ROLE, BY_ID, OPERATIVES, FORM_MULT, FIRM_GROUPS } from '../data/operatives.js';
-import { laneFit, rateRoster } from './sim.js';
+import { laneFit, rateRoster, K } from './sim.js';
 import { envValue, DEFAULT_ENV, scoreDraft } from './scoring.js';
 
 export const MAX_TEAMS = 12;
@@ -157,18 +157,41 @@ export function applyPick(league, rec) {
 }
 
 /* ── bots / autopick ──────────────────────────────────────────────────────*/
+/**
+ * What a name is worth to this team right now. Drives both the bots and the
+ * "Best for my lane" board, so the two always agree.
+ *
+ * Value over REPLACEMENT, priced by the slot's weight -- not raw OVR nudged by
+ * it. The old form multiplied the whole rating by (0.85 + 0.15 × weight),
+ * which spread the entire 21-slot table across a 9% band and left the board
+ * recommending an 88 press secretary over an 84 campaign manager. Scoring the
+ * margin over a replacement hire instead means a merely good campaign manager
+ * beats a great press secretary, which is what the weight table is for.
+ *
+ * A free agent rates 60 against a replacement level of 70, so it prices itself
+ * below every real name and needs no special penalty -- but it still outranks a
+ * cross-party hire, which is correct: you would rather have the anonymous pro.
+ */
 export function pickValue(op, lane, role, league, rand = Math.random) {
   const fit = laneFit(op, lane);
-  let v = op.ovr * fit.mult * FORM_MULT[op.form ?? 'N'] * (0.85 + 0.15 * role.weight);
-  if (op.free) v -= 12;
+  const eff = op.ovr * fit.mult * FORM_MULT[op.form ?? 'N'];
+  let v = (eff - K.REPLACEMENT) * role.weight;
   if (lane && !op.free && league) {
-    // Scarcity: the last on-lane names in a heavy slot are worth reaching for.
-    const onLaneLeft = availableFor(league, role.id).filter(p => p.lanes.includes(lane.id)).length;
-    if (fit.label === 'On lane' && onLaneLeft <= 2) v += 4 * role.weight;
+    // Scarcity is about what the slot will still offer when the clock comes
+    // back, not how good this name is. A 39-deep pollster bench will still
+    // have someone worth having in six rounds; a 13-deep field bench in a
+    // 12-team league will not. Measure the cushion -- usable names left over
+    // once every team that still needs one has taken theirs -- and pay for
+    // urgency only as that cushion runs out.
+    const usable = availableFor(league, role.id)
+      .filter(p => !p.free && laneFit(p, lane).mult >= K.SAME_SIDE).length;
+    const need = league.teams.filter(t => t.lane && !t.roster[role.id]).length;
+    const urgency = Math.max(0, Math.min(1, 1 - (usable - need) / 6));
+    v += 8 * role.weight * urgency;
     // Taking a partner also takes their shop off everyone else's board.
-    if (op.group) v += 1.5 * firmMates(op).length;
+    if (op.group) v += 4 * firmMates(op).length;
   }
-  return v + (rand() - 0.5) * 5;
+  return v + (rand() - 0.5) * 10;
 }
 
 export function bestPick(league, team, rand = league.rand || Math.random) {
