@@ -70,6 +70,24 @@ is both the best-rated Republican firm (A, 58 polls) *and* carries a D+2.0 house
 lean, so it is worth +0.37 to a Republican war room. GQR is an A− with 62 polls
 but its D+2.2 lean costs a Democratic war room 0.39.
 
+## 3c. Firm ties
+
+Where a card owns or is a partner in another card's shop, the two are the same
+hire. Drafting either one **retains the whole firm** for that war room and takes
+the rest off the board for every team — the way a polling or media firm signs
+with one campaign in a race. Anna Greenberg is a partner at GQR, so you cannot
+hire both, and neither can anyone else once one of them is gone.
+
+Twenty-four firms are tied this way, from two-card pairs (GMMB and Jim Margolis,
+Civis Analytics and Dan Wagner) to three-card shops (Precision Strategies:
+Jen O'Malley Dillon, Stephanie Cutter and Teddy Goff; Crooked Media: Favreau,
+Pfeiffer and Vietor). Only ownership counts — sharing a former employer does
+not, or the nine people in this pool who worked on Trump 2024 would collapse
+into one pick.
+
+The bots price the lockout in: taking a partner is worth a little extra because
+it denies the shop to everyone else.
+
 ## 4. Head to head and the map
 
 Head to head is the same equation with every term differenced against the rival, so exactly one of them wins each state.
@@ -78,20 +96,20 @@ The map's per-room shares are a softmax over each room's county margin (temperat
 
 ## 5. Why the toss-up preset is D+3.5
 
-A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+4.0:
+A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+3.5:
 
 | Preset | Popular vote | D wins head-to-head |
 |---|---|---|
 | Republican wave | R+2.0 | 0% |
-| Lean Republican | D+2.5 | 6% |
-| **Toss-up** | **D+4.0** | **49%** |
-| Lean Democratic | D+5.0 | 77% |
+| Lean Republican | D+2.5 | 15% |
+| **Toss-up** | **D+3.5** | **48%** |
+| Lean Democratic | D+4.5 | 76% |
 | Democratic wave | D+6.5 | 100% |
 
-The toss-up moved from D+3.5 to D+4.0 when the pollster house-effect mechanic
-went in: Democratic firms in the Silver Bulletin data carry larger house biases
-than Republican ones, so Democratic war rooms eat more flattery on average and
-needed the map re-centered.
+This number moves whenever the pool does, which is why `npm run balance` exists.
+It went to D+4.0 when the pollster house-effect mechanic landed (Democratic
+firms in the Silver Bulletin data carry larger house biases, so Democratic war
+rooms eat more flattery) and back to D+3.5 when the pool grew to 312 names.
 
 ## 6. The draft score
 

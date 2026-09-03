@@ -27,8 +27,12 @@ export const K = {
   EMPHASIS_POWER: 3,     // how sharply a state's emphasis multipliers bite
   PROB_BASE: 1.6, PROB_VOL: 0.40,   // county logistic scale = base + vol × volatility
   STATE_PROB_BASE: 1.2, STATE_PROB_VOL: 0.30,
-  POLL_BIAS: 0.18,       // margin points per point of your pollster's house bias
-  POLL_BIAS_CAP: 0.6,
+  POLL_BIAS: 0.08,       // margin points per point of your pollster's house bias.
+                         // Deliberately small: this is measured on a firm's
+                         // RELEASED polls, which are a messaging product, and is
+                         // weak evidence about the private numbers it hands its
+                         // own client.
+  POLL_BIAS_CAP: 0.25,
   RECOUNT_BAND: 0.6, RECOUNT_FLOOR: 84
 };
 

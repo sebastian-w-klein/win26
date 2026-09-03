@@ -122,7 +122,7 @@ export const POLLSTER_RATINGS = {
     "err": 4.5,
     "aapor": true,
     "banned": false,
-    "ovr": 84
+    "ovr": 86
   },
   "WPA Intelligence": {
     "grade": "B/C",

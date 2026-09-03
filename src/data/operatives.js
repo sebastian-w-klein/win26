@@ -444,6 +444,133 @@ for (const p of P) {
 // something; it is not worth very much.
 export const FORM_MULT = { W: 1.025, L: 0.975, N: 1.0 };
 
+/* ── depth for the thin slots once firm ties collapse the board ──────────── */
+
+/* research director */
+o('research-director', 'Tyson Brody', 'Sanders 2020', 'D', 'prog-populist mainstream-prog', 76, 'analytics union', 'Research director, Bernie Sanders 2020');
+o('research-director', 'Accountable.US', 'Accountable.US', 'D', 'mainstream-prog liberal-inst labor-liberal', 77, 'analytics earned-media', 'Progressive watchdog group that researches corporate and administration conduct');
+o('research-director', 'Judicial Watch', 'Judicial Watch', 'R', 'fusionist-con maga-populist', 75, 'analytics legal', 'Conservative watchdog group that litigates for government records');
+o('research-director', 'CREW', 'Citizens for Responsibility and Ethics in Washington', 'X', 'liberal-inst security-hawk', 76, 'legal analytics', 'The ethics watchdog whose records requests drive a steady stream of political stories');
+o('research-director', 'Republican Accountability', 'Republican Accountability Project', 'R', 'security-hawk fusionist-con', 72, 'earned-media suburban', 'The anti-Trump Republican group that tracks and rates GOP officials');
+o('research-director', 'Due Diligence Group', 'Due Diligence Group', 'D', 'liberal-inst mainstream-prog', 74, 'analytics persuasion', 'Democratic opposition research firm');
+
+/* operations director */
+o('operations-director', 'Ann Marie Habershaw', 'Obama 2012', 'D', 'liberal-inst abundance-mod multiracial-coalition', 83, 'ops turnout', 'Chief operating officer, Obama 2012');
+o('operations-director', 'Brad Crate', 'Red Curve Solutions', 'R', 'fusionist-con security-hawk', 80, 'ops bigmoney', 'Founder of Red Curve Solutions, the Republican campaign compliance and accounting firm');
+o('operations-director', 'Julianna Smoot', 'Obama 2012', 'D', 'liberal-inst abundance-mod', 79, 'ops bigmoney', 'Deputy campaign manager, Obama 2012; national finance director, Obama 2008');
+o('operations-director', 'Aristotle', 'Aristotle International', 'X', 'liberal-inst fusionist-con abundance-mod security-hawk', 74, 'ops analytics', 'The bipartisan campaign data and compliance vendor');
+o('operations-director', 'Re:Power', 'Re:Power', 'D', 'mainstream-prog prog-populist multiracial-coalition', 72, 'ops turnout', 'The progressive campaign training organization formerly known as Wellstone Action');
+o('operations-director', 'Leadership Institute', 'Leadership Institute', 'R', 'fusionist-con social-conservative', 73, 'ops rural', 'The conservative organization that has trained Republican operatives since 1979');
+
+/* deputy field director */
+o('deputy-field', 'Swing Left', 'Swing Left', 'D', 'mainstream-prog liberal-inst', 77, 'suburban turnout', 'The volunteer network that channels canvassers into the closest races');
+o('deputy-field', 'Voto Latino', 'Voto Latino', 'D', 'multiracial-coalition mainstream-prog', 78, 'latino young', 'Latino voter registration and turnout organization');
+o('deputy-field', 'When We All Vote', 'When We All Vote', 'D', 'multiracial-coalition liberal-inst', 74, 'black young', 'The nonpartisan voter registration organization co-chaired by Michelle Obama');
+o('deputy-field', 'Everytown', 'Everytown for Gun Safety', 'D', 'mainstream-prog abundance-mod', 76, 'suburban young', 'The gun safety organization and its volunteer canvassing network');
+o('deputy-field', 'CatholicVote', 'CatholicVote', 'R', 'social-conservative fusionist-con', 75, 'senior rural', 'Conservative Catholic voter mobilization organization');
+o('deputy-field', "Concerned Women for America", 'CWA', 'R', 'social-conservative fusionist-con', 72, 'senior rural', 'Long-running conservative Christian womens organization and its voter program');
+o('deputy-field', 'Turning Point Faith', 'Turning Point Faith', 'R', 'social-conservative maga-populist', 73, 'rural senior', 'The church-organizing arm of Turning Point, built to register conservative congregations');
+
+/* data director */
+o('data-director', 'Harper Reed', 'Obama 2012', 'D', 'liberal-inst abundance-mod', 85, 'analytics young', 'Chief technology officer, Obama 2012');
+o('data-director', 'Ethan Roeder', 'Obama 2012', 'D', 'liberal-inst mainstream-prog', 80, 'analytics turnout', 'Data director, Obama 2008 and 2012');
+o('data-director', 'NGP VAN', 'NGP VAN', 'D', 'liberal-inst mainstream-prog prog-populist labor-liberal', 82, 'analytics turnout', 'The voter contact and organizing platform nearly every Democratic campaign runs on');
+o('data-director', 'Optimus', 'Optimus Analytics', 'R', 'fusionist-con tech-right security-hawk', 79, 'analytics suburban', 'Republican analytics and modeling firm');
+o('data-director', 'L2', 'L2 Political', 'X', 'liberal-inst fusionist-con abundance-mod security-hawk', 76, 'analytics rural', 'The nonpartisan national voter file vendor');
+o('data-director', 'HaystaqDNA', 'Haystaq', 'D', 'mainstream-prog liberal-inst', 74, 'analytics latino', 'Democratic predictive modeling firm founded by Obama 2008 analytics alumni');
+
+/* one more firm tie: Joel Benenson sits in Chief Strategist, his shop polls */
+pl('Benenson Strategy Group', 'BSG', 'D', 'liberal-inst abundance-mod mainstream-prog', 'Benenson Strategy Group', 'persuasion suburban', 'The research firm founded by Joel Benenson, lead pollster for Obama 2008 and 2012');
+
+/* ── topping up every slot to twelve distinct hires ─────────────────────── */
+
+/* deputy campaign manager */
+o('deputy-cm', 'Michael Halle', 'Buttigieg 2020', 'D', 'abundance-mod liberal-inst', 79, 'turnout ops', 'States director, Clinton 2016; senior adviser, Pete Buttigieg 2020');
+o('deputy-cm', 'Kate Berner', 'Biden White House', 'D', 'liberal-inst mainstream-prog', 76, 'persuasion suburban', 'Deputy communications director, Biden 2020 and the Biden White House');
+o('deputy-cm', 'Matt Wolking', 'Trump 2020', 'R', 'maga-populist fusionist-con', 74, 'earned-media rural', 'Deputy communications director for rapid response, Trump 2020');
+o('deputy-cm', 'Sergio Gor', 'Trump 2024', 'R', 'maga-populist tech-right', 75, 'ops bigmoney', 'Co-founder of Winning Team Publishing; White House personnel director');
+
+/* senior adviser */
+o('senior-adviser', 'Mitch Landrieu', 'Biden-Harris 2024', 'D', 'liberal-inst labor-liberal abundance-mod', 79, 'rural persuasion', 'National co-chair, Biden-Harris 2024; White House infrastructure coordinator');
+o('senior-adviser', 'Jaime Harrison', 'DNC', 'D', 'multiracial-coalition liberal-inst', 77, 'black turnout', 'Chair of the Democratic National Committee');
+o('senior-adviser', 'Boris Epshteyn', 'Trump 2024', 'R', 'maga-populist', 74, 'legal earned-media', 'Strategic adviser to the Trump campaign and its legal operation');
+
+/* press secretary */
+o('press-secretary', 'Sarafina Chitika', 'Harris 2024', 'D', 'liberal-inst multiracial-coalition', 75, 'earned-media young', 'Spokesperson, Harris 2024');
+o('press-secretary', 'Seth Schuster', 'Biden 2024', 'D', 'liberal-inst abundance-mod', 73, 'persuasion suburban', 'Spokesman, Biden 2024');
+o('press-secretary', 'Anna Kelly', 'RNC', 'R', 'maga-populist fusionist-con', 72, 'earned-media rural', 'RNC spokeswoman');
+
+/* rapid response */
+o('rapid-response', 'Matt Gorman', 'Targeted Victory', 'R', 'fusionist-con security-hawk', 76, 'earned-media suburban', 'Senior adviser, Tim Scott 2024; communications director at the NRCC');
+o('rapid-response', 'Colin Reed', 'South and Hill Strategies', 'R', 'fusionist-con security-hawk', 74, 'analytics earned-media', 'Republican researcher and co-founder of South and Hill Strategies');
+o('rapid-response', 'Josh Schwerin', 'Priorities USA', 'D', 'liberal-inst mainstream-prog', 75, 'earned-media persuasion', 'National spokesman, Clinton 2016; senior strategist at Priorities USA');
+
+/* creative director */
+o('creative-director', 'AL Media', 'AL Media', 'D', 'liberal-inst labor-liberal mainstream-prog', 79, 'persuasion union', 'Democratic media and creative firm');
+o('creative-director', 'Left Hook', 'Left Hook Strategy', 'D', 'mainstream-prog prog-populist', 76, 'viral young', 'Democratic creative and paid media firm');
+o('creative-director', 'Change Media Group', 'Change Media Group', 'R', 'maga-populist fusionist-con', 75, 'viral rural', 'Republican video and creative firm');
+o('creative-director', 'Cold Spark Media', 'Cold Spark Media', 'R', 'fusionist-con security-hawk', 74, 'persuasion senior', 'Republican media and creative firm');
+
+/* finance director */
+o('finance-director', 'Anedot', 'Anedot', 'R', 'fusionist-con maga-populist tech-right libertarian-r', 78, 'small-dollar rural', 'Republican online fundraising and payments platform');
+o('finance-director', 'Democracy Engine', 'Democracy Engine', 'D', 'mainstream-prog liberal-inst', 74, 'small-dollar analytics', 'Democratic contribution processing and fundraising platform');
+o('finance-director', 'Kimberly Guilfoyle', 'Trump 2020', 'R', 'maga-populist social-conservative', 73, 'bigmoney rural', 'National finance committee chair, Trump 2020');
+o('finance-director', 'Campaign Solutions', 'Campaign Solutions', 'R', 'fusionist-con security-hawk', 73, 'small-dollar bigmoney', 'Republican digital fundraising firm');
+
+/* policy director */
+o('policy-director', 'Third Way', 'Third Way', 'D', 'abundance-mod liberal-inst', 77, 'suburban persuasion', 'The centrist Democratic think tank');
+o('policy-director', 'Economic Policy Institute', 'EPI', 'D', 'labor-liberal prog-populist', 76, 'union rural', 'The labor-aligned economic think tank');
+o('policy-director', 'Cato Institute', 'Cato', 'R', 'libertarian-r tech-right', 75, 'suburban persuasion', 'The libertarian think tank');
+o('policy-director', 'Manhattan Institute', 'Manhattan Institute', 'R', 'fusionist-con security-hawk', 76, 'suburban senior', 'The conservative think tank focused on cities, policing and education');
+o('policy-director', 'America First Policy Institute', 'AFPI', 'R', 'maga-populist social-conservative', 78, 'rural persuasion', 'The Trump-aligned policy shop that staffed much of the second-term agenda');
+
+/* ── firm ties ─────────────────────────────────────────────────────────────
+ * Where a card OWNS or is a PARTNER in another card's shop, the two are the
+ * same hire. Drafting either one retains the whole firm for that war room and
+ * takes the rest off the board for everybody — the way a polling or media firm
+ * signs with one campaign in a race.
+ *
+ * Only ownership counts. Sharing a former employer does not: nine people in
+ * this pool worked on Trump 2024 and twelve on Biden 2020, and any campaign can
+ * hire from a rival's alumni.
+ */
+export const FIRM_GROUPS = {
+  precision:     { label: 'Precision Strategies',      names: ["Jen O'Malley Dillon", 'Stephanie Cutter', 'Teddy Goff'] },
+  crooked:       { label: 'Crooked Media',             names: ['Jon Favreau', 'Dan Pfeiffer', 'Tommy Vietor'] },
+  akpd:          { label: 'AKPD Message and Media',    names: ['David Axelrod', 'Larry Grisolano'] },
+  npa:           { label: 'National Public Affairs',   names: ['Justin Clark', 'Bill Stepien'] },
+  lincoln:       { label: 'The Lincoln Project',       names: ['Stuart Stevens', 'Rick Wilson'] },
+  bulwark:       { label: 'The Bulwark',               names: ['Sarah Longwell', 'Tim Miller'] },
+  gmmb:          { label: 'GMMB',                      names: ['GMMB', 'Jim Margolis'] },
+  s270:          { label: '270 Strategies',            names: ['Jeremy Bird', 'Mitch Stewart'] },
+  unitehere:     { label: 'UNITE HERE',                names: ['UNITE HERE', 'Culinary Union Local 226'] },
+  cap:           { label: 'Center for American Progress', names: ['Center for American Progress', 'Neera Tanden'] },
+  americanbridge:{ label: 'American Bridge',           names: ['American Bridge 21st Century', 'Pat Dennis'] },
+  bluelabs:      { label: 'BlueLabs',                  names: ['BlueLabs', 'Elan Kriegel'] },
+  civis:         { label: 'Civis Analytics',           names: ['Civis Analytics', 'Dan Wagner'] },
+  deeproot:      { label: 'Deep Root Analytics',       names: ['Deep Root Analytics', 'Alex Lundry'] },
+  echelon:       { label: 'Echelon Insights',          names: ['Echelon Insights', 'Kristen Soltis Anderson'] },
+  skdk:          { label: 'SKDK',                      names: ['SKDK', 'Anita Dunn'] },
+  faithfreedom:  { label: 'Faith & Freedom Coalition', names: ['Faith & Freedom Coalition', 'Ralph Reed'] },
+  heritage:      { label: 'The Heritage Foundation',   names: ['The Heritage Foundation', 'Heritage Action'] },
+  impact:        { label: 'Impact Research',           names: ['John Anzalone', 'Molly Murphy'] },
+  pos:           { label: 'Public Opinion Strategies', names: ['Public Opinion Strategies', 'Glen Bolger'] },
+  gqr:           { label: 'GQR',                       names: ['GQR', 'Anna Greenberg'] },
+  benenson:      { label: 'Benenson Strategy Group',   names: ['Benenson Strategy Group', 'Joel Benenson'] },
+  redcurve:      { label: 'Red Curve Solutions',       names: ['Brad Crate'] },
+  turningpoint:  { label: 'Turning Point',             names: ['Turning Point Action', 'Turning Point Faith'] },
+  afpi:          { label: 'America First Policy Institute', names: ['America First Policy Institute', 'Hogan Gidley'] },
+  targetedvic:   { label: 'Targeted Victory',          names: ['Targeted Victory', 'Matt Gorman'] }
+};
+
+for (const [id, g] of Object.entries(FIRM_GROUPS)) {
+  for (const name of g.names) {
+    const hits = P.filter(p => p.name === name);
+    if (!hits.length) throw new Error(`firm group ${id} names "${name}", which is not in the pool`);
+    for (const p of hits) p.group = id;
+  }
+}
+
 // Lanes added for twelve-seat leagues, tagged onto the picks that fit them.
 const EXTRA_LANES = {"labor-liberal": ["Rebecca Katz", "Annie Wu Henry", "Devine Mulvey Longabaugh", "AFL-CIO", "Culinary Union Local 226", "Brendan McPhillips", "Celinda Lake", "Mike Donilon", "Faiz Shakir", "Jeff Weaver", "Mark Putnam", "Warren Gunnels", "SEIU", "Ben Tulchin", "John Anzalone", "Jenn Ridder", "Greg Schultz"], "multiracial-coalition": ["Quentin Fulks", "Marlon Marshall", "Jeremy Bird", "Emmy Ruiz", "Cedric Richmond", "Michael Tyler", "Symone Sanders Townsend", "SEIU", "Working Families Party", "Catalist", "Karine Jean-Pierre", "ActBlue", "Marc Elias", "Nina Turner", "Analilia Mejia", "Geoff Garin", "Betsy Hoover", "Rob Flaherty"], "security-hawk": ["Karl Rove", "Stuart Stevens", "Sarah Longwell", "Tim Miller", "Kristen Soltis Anderson", "Charlie Spies", "Katie Walsh Shields", "Sean Cairncross", "Echelon Insights", "Consovoy McCarthy", "National Media", "Something Else Strategies", "Poolhouse", "Glen Bolger", "Todd Ricketts", "Delve", "Sarah Matthews", "Brendan Buck"], "social-conservative": ["Faith & Freedom Coalition", "The Heritage Foundation", "Jamestown Associates", "Sentinel Action Fund", "Cleta Mitchell", "National Rifle Association", "RNC Ground Game", "Hogan Gidley", "Tim Murtaugh", "John McLaughlin", "Alex Latcham", "Chris Carr", "Nick Trainer", "Richard Walters"]};
 for (const [lane, names] of Object.entries(EXTRA_LANES))

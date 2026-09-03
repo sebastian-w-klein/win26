@@ -29,8 +29,7 @@ export function pollsterChips(op, side) {
   const read = houseRead(r, side);
   return [
     h('span.chip', { title: `Silver Bulletin grade, from ${r.polls} rated poll${r.polls === 1 ? '' : 's'}` }, `SB ${r.grade}`),
-    h('span.chip', { title: 'Historical statistical bias in this firm’s published polls' }, `House ${biasLabel(r.bias)}`),
-    read && h('span.chip', { class: read.tone, title: read.why }, read.label)
+    h('span.chip', { title: read ? read.why : 'Historical statistical bias in this firm’s published polls' }, `House ${biasLabel(r.bias)}`)
   ];
 }
 
@@ -48,7 +47,11 @@ export function pollsterDetail(op, side) {
       r.polls >= 8 && r.called != null ? stat('Called', r.called + '%', 'Share of rated races where the firm picked the winner') : null,
       r.polls >= 8 && r.err != null ? stat('Avg error', r.err, 'Average error on the margin, in points') : null
     ),
-    read && h('p.tiny', { class: read.tone === 'bad' ? 'bad-text' : '', style: { marginTop: '8px', color: read.tone === 'good' ? 'var(--good)' : read.tone === 'bad' ? 'var(--bad)' : 'var(--ink-dim)' } }, read.why),
+    read && h('p.tiny', { style: { marginTop: '8px', color: 'var(--ink-dim)' } },
+      read.why, ' ',
+      h('span.mono', { style: { color: read.pts > 0 ? 'var(--good)' : read.pts < 0 ? 'var(--bad)' : 'var(--ink-dim)' } },
+        `${read.pts > 0 ? '+' : ''}${read.pts.toFixed(2)} pts`),
+      h('span.faint', ' — measured on released public polls, which are a messaging product as much as an estimate.')),
     r.polls < 8 && h('p.tiny.faint', { style: { marginTop: '6px' } },
       `Only ${r.polls} rated poll${r.polls === 1 ? '' : 's'} — campaign pollsters work mostly in private, so this rating is reverted toward the card's editorial rating.`)
   );

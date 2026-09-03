@@ -36,7 +36,9 @@ const rows = csv(readFileSync(resolve(root, 'data/raw/silver-bulletin-pollster-r
 const byName = Object.fromEntries(rows.map(r => [r.pollster, r]));
 
 // Which Silver Bulletin firm backs each card in the pool, and what the card
-// was rated at editorially before the data existed.
+// is rated at editorially. The editorial number is the reversion target for
+// firms with thin public-poll samples; it carries reputation and pedigree that
+// a public-poll accuracy score does not see.
 export const FIRM_MAP = {
   'Fabrizio, Lee & Associates': 90,
   'Impact Research': 85,
@@ -47,7 +49,7 @@ export const FIRM_MAP = {
   'Public Opinion Strategies': 80,
   'Global Strategy Group': 80,
   'David Binder Research': 79,
-  'Greenberg Quinlan Rosner': 78,
+  'Greenberg Quinlan Rosner': 88,
   'WPA Intelligence': 78,
   'Tulchin Research': 77,
   'North Star Opinion Research': 77,

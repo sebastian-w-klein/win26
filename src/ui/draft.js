@@ -4,9 +4,10 @@ import { ROLES, ROLE_BY_ID, CATEGORIES } from '../data/roles.js';
 import { LANES, SIDE } from '../data/lanes.js';
 import { laneFit } from '../engine/sim.js';
 import { scoreDraft, gradeFor } from '../engine/scoring.js';
-import { availableForTeam, availableLanes, picksUntil, pickValue, ROUNDS, fullOrder, onClock } from '../engine/draft.js';
+import { availableForTeam, availableLanes, picksUntil, pickValue, ROUNDS, fullOrder, onClock, firmMates } from '../engine/draft.js';
 import { laneCard } from './lanes.js';
 import { pollsterChips, pollsterDetail } from './pollster.js';
+import { FIRM_GROUPS } from '../data/operatives.js';
 
 const FORM = { W: ['good', 'Won'], L: ['bad', 'Lost'], N: ['', '—'] };
 const fitClass = f => f.tone === 'good' ? 'good' : f.tone === 'bad' ? 'bad' : f.tone === 'warn' ? 'warn' : '';
@@ -76,10 +77,17 @@ export function renderDraft(root, app, store) {
         h('div.grow',
           h('div.name', p.name, queued.has(p.id) && h('span.chip.accent', { style: { marginLeft: '6px' } }, p.id === queueFirst ? 'Next in queue' : 'Queued')),
           h('div.meta', `${role.title} · ${p.org}`),
-          h('div.chips', h('span.chip', { class: fitClass(fit) }, fit.label), p.form !== 'N' && h('span.chip', { class: ft }, `${fw} · ${p.formCycle}`), pollsterChips(p, team.lane?.side), ...p.specs.map(s => h('span.chip', s)))
+          h('div.chips', h('span.chip', { class: fitClass(fit) }, fit.label), p.form !== 'N' && h('span.chip', { class: ft }, `${fw} · ${p.formCycle}`), pollsterChips(p, team.lane?.side),
+            p.group && firmMates(p).length > 0 && h('span.chip.accent', {
+              title: `One hire with ${FIRM_GROUPS[p.group].label}. Drafting this also takes ${firmMates(p).map(m => m.name).join(', ')} off the board for every war room.`
+            }, firmMates(p).length === 1 ? `+ ${firmMates(p)[0].name}` : `+ ${firmMates(p).length} more`),
+            ...p.specs.map(s => h('span.chip', s)))
         ),
         h('div', h('div.ovr', { style: { color: p.ovr >= 88 ? 'var(--accent)' : p.ovr >= 80 ? 'var(--ink)' : 'var(--ink-dim)' } }, p.ovr), h('div.cost', `${p.cost} cr`)),
-        ui.selected === p.id && h('div.credit', p.credit, pollsterDetail(p, team.lane?.side))
+        ui.selected === p.id && h('div.credit', p.credit,
+          p.group && firmMates(p).length > 0 && h('p.tiny', { style: { marginTop: '6px', color: 'var(--accent)' } },
+            `Firm tie — ${p.name} and ${firmMates(p).map(m => m.name).join(' and ')} are one hire at ${FIRM_GROUPS[p.group].label}. Drafting this takes the ${firmMates(p).length === 1 ? 'other' : 'others'} off the board for every war room.`),
+          pollsterDetail(p, team.lane?.side))
       );
     };
 

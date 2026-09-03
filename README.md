@@ -24,6 +24,11 @@ npm run balance      # re-measure the environment presets
 
 **Round 1 — the lane.** Twelve lanes, six per side, exclusive. Your lane sets your national ceiling, decides which voters you over- and under-perform with, and determines which operatives are *on lane*.
 
+**Firm ties.** Where a card owns or is a partner in another card's shop, they are
+one hire: drafting Anna Greenberg retains GQR, and both come off the board for
+everybody. Twenty-four firms work this way. Sharing a former employer doesn't
+count — anyone can hire from a rival's alumni.
+
 **Rounds 2–22 — any open slot.** Whoever is on the clock takes any operative whose slot they still have open; the order snakes. Every pick is multiplied by lane fit: on lane 1.10, right party but wrong faction 0.92, cross-party 0.62. When a slot runs dry there is always a replacement-level **free agent**.
 
 **Election night.** Ten unit ratings and a coalition profile per roster, run through every county. States are the vote-weighted sum of their counties; the Electoral College is the sum of the states. In a league the opposing operation is the field's own average, and every rival on the other side gets a true head-to-head.
@@ -35,7 +40,7 @@ Each county is shaded for the war room that runs strongest there. Hover for ever
 ## Repository
 
 ```
-src/data/         roles, lanes, the 251-name pool, generated county + state tables
+src/data/         roles, lanes, the 312-name pool, generated county + state tables
 src/engine/       sim.js (counties → states → EV), scoring, draft order + bots
 src/net/          identity, LocalStore (practice) and SharedStore (live, on the artifact db)
 src/ui/           lobby, league room, draft room, results, the map
