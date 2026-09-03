@@ -19,10 +19,10 @@ export const K = {
   OPPONENT: 90,          // unit rating of a generic well-run opposing campaign
   ON_LANE: 1.10, SAME_SIDE: 0.92, MERCENARY: 1.00, CROSS_PARTY: 0.62,
   UNIT_SPEC: 2.4,        // unit bonus per matching spec tag, at an even slot
-  AXIS_SPEC: 0.14,       // axis appeal per matching spec tag, before role weight.
+  AXIS_SPEC: 0.13,       // axis appeal per matching spec tag, before role weight.
                          // Scaled with the weight table: axis appeal is
                          // multiplied by role.weight, whose mean went 1.16 ->
-                         // 1.33, so this came down to hold the average tag's
+                         // 1.39, so this came down to hold the average tag's
                          // coalition pull where it was.
   AXIS_CAP: 2.0,         // most a roster can move one axis
   COUNTY_AXIS: 0.55,     // margin points per (appeal × z-score) in a county
@@ -50,15 +50,16 @@ const TOTAL_WEIGHT = ROLES.reduce((s, r) => s + r.weight, 0);
 const CAT_WEIGHT = Object.fromEntries(
   CAT_IDS.map(c => [c, ROLES.filter(r => r.cat === c).reduce((s, r) => s + r.weight, 0)]));
 export const CAT_SHARE = Object.fromEntries(CAT_IDS.map(c => [c, CAT_WEIGHT[c] / TOTAL_WEIGHT]));
+export { TOTAL_WEIGHT };
 
 /**
  * How much one slot's spec tag counts inside its own unit, relative to an even
  * split of that unit. K.UNIT_SPEC used to be flat, which quietly overrode the
- * weight table: a tag was worth 2.4 unit points whether it came from the
- * campaign manager or the press secretary, while a 12-point OVR upgrade at the
- * campaign manager only moved COMMAND by 3.7. Upgrading a slot could therefore
- * make a roster WORSE if the better operative happened to carry one tag fewer,
- * which is exactly what the deputy CM and creative director slots did.
+ * weight table: a tag was worth 2.4 unit points wherever it came from, while a
+ * 12-point OVR upgrade at the campaign manager only moved COMMAND by 3.7.
+ * Upgrading a slot could therefore make a roster WORSE if the better operative
+ * happened to carry one tag fewer, which is exactly what the deputy CM and
+ * creative director slots did.
  */
 const CAT_COUNT = Object.fromEntries(CAT_IDS.map(c => [c, ROLES.filter(r => r.cat === c).length]));
 export const SPEC_SHARE = Object.fromEntries(
@@ -198,6 +199,20 @@ const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 export function pollingEdge(rating, side) {
   const flatter = (side === 'D' ? 1 : -1) * (rating.houseBias || 0);
   return clamp(-flatter * K.POLL_BIAS, -K.POLL_BIAS_CAP, K.POLL_BIAS_CAP);
+}
+
+/**
+ * The same rule for a single candidate at pick time, so the draft board can
+ * price a pollster before you hire them. Returns margin points, positive when
+ * the firm's published record helps this lane. Zero for every other slot.
+ *
+ * This is the one slot where the higher rating can be the worse pick, so a
+ * board that ranks pollsters on rating alone recommends the trap.
+ */
+export function pollsterEdgeOf(op, lane) {
+  if (!op || !lane || op.role !== 'chief-pollster' || !op.firm) return 0;
+  const bias = POLLSTER_RATINGS[op.firm]?.bias ?? 0;
+  return clamp(-((lane.side === 'D' ? 1 : -1) * bias) * K.POLL_BIAS, -K.POLL_BIAS_CAP, K.POLL_BIAS_CAP);
 }
 
 /**

@@ -7,7 +7,7 @@
 import { ROLES, ROLE_BY_ID } from '../data/roles.js';
 import { LANES, LANE_BY_ID } from '../data/lanes.js';
 import { BY_ROLE, BY_ID, OPERATIVES, FORM_MULT, FIRM_GROUPS } from '../data/operatives.js';
-import { laneFit, rateRoster, K } from './sim.js';
+import { laneFit, rateRoster, pollsterEdgeOf, TOTAL_WEIGHT, K } from './sim.js';
 import { envValue, DEFAULT_ENV, scoreDraft } from './scoring.js';
 
 export const MAX_TEAMS = 12;
@@ -191,6 +191,10 @@ export function pickValue(op, lane, role, league, rand = Math.random) {
     // Taking a partner also takes their shop off everyone else's board.
     if (op.group) v += 4 * firmMates(op).length;
   }
+  // House bias, priced in the same currency. A slot's rating converts to margin
+  // at weight / TOTAL_WEIGHT x OPS_SCALE, so run the pollster's margin edge back
+  // through that to compare it with everyone else's value over replacement.
+  if (lane) v += pollsterEdgeOf(op, lane) * TOTAL_WEIGHT / K.OPS_SCALE;
   return v + (rand() - 0.5) * 10;
 }
 

@@ -13,7 +13,7 @@ export { laneFit, effectiveRating, rateRoster, prepare, simulate, pollingEdge, K
  */
 export const ENVIRONMENTS = [
   { id: 'r-wave', label: 'Republican wave', value: -1.5 },
-  { id: 'lean-r', label: 'Lean Republican', value:  3.0 },
+  { id: 'lean-r', label: 'Lean Republican', value:  2.5 },
   { id: 'tossup', label: 'Toss-up',         value:  4.0 },
   { id: 'lean-d', label: 'Lean Democratic', value:  5.0 },
   { id: 'd-wave', label: 'Democratic wave', value:  7.0 }
