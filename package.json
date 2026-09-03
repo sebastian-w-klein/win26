@@ -1,0 +1,26 @@
+{
+  "name": "war-room-draft-2028",
+  "version": "1.0.0",
+  "description": "A fantasy-draft game for the 2028 presidential campaign.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "check": "./tools/check.sh",
+    "build": "node tools/build.mjs",
+    "serve": "python3 -m http.server 8127"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastian-w-klein/win26.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sebastian-w-klein/win26/issues"
+  },
+  "homepage": "https://github.com/sebastian-w-klein/win26#readme",
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  },
+  "private": true,
+  "type": "module"
+}
