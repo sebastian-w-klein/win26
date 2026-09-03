@@ -191,9 +191,16 @@ input, select { font-family: inherit; font-size: inherit; color: inherit; }
 /* player list */
 .filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--surface); z-index: 2; }
 .filters .input { min-height: 36px; padding: 6px 10px; }
-.role-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 8px 10px; border-bottom: 1px solid var(--line); scrollbar-width: none; }
-.role-tabs::-webkit-scrollbar { display: none; }
-.role-tabs button { flex: 0 0 auto; padding: 5px 9px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--ink-dim); background: var(--surface-2); white-space: nowrap; }
+/* Twenty-two role filters used to sit on one horizontal line with the
+   scrollbar hidden, so the far end was unreachable: a vertical wheel does not
+   scroll a horizontal box and there was nothing to grab. They wrap now, so
+   nearly all of them are simply visible, and the little that overflows scrolls
+   vertically -- which the wheel does handle -- against a scrollbar you can see. */
+.role-tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px; border-bottom: 1px solid var(--line);
+             max-height: 148px; overflow-y: auto; overscroll-behavior: contain; }
+.role-tabs::-webkit-scrollbar { width: 10px; }
+.role-tabs::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 5px; }
+.role-tabs button { flex: 0 0 auto; padding: 5px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: var(--ink-dim); background: var(--surface-2); white-space: nowrap; }
 .role-tabs button[aria-pressed="true"] { background: var(--surface-3); color: var(--ink); box-shadow: inset 0 -2px 0 var(--cat, var(--accent)); }
 .role-tabs button.filled { opacity: 0.45; text-decoration: line-through; }
 .plist { max-height: min(62vh, 720px); overflow-y: auto; }

@@ -183,7 +183,23 @@ export function renderDraft(root, app, store) {
   /* ── layout ────────────────────────────────────────────────────────── */
   const paneEls = { players: h('div.pane'), board: h('div.pane'), team: h('div.pane'), feed: h('div.pane') };
   const painters = { players: playersPane, board: boardPane, team: teamPane, feed: feedPane };
-  function repaint(which) { mount(paneEls[which], painters[which]()); }
+  // A pick lands every few seconds and repaints every pane, and mount() clears
+  // and rebuilds, so any pane you were scrolled into snapped back to the
+  // top-left mid-read -- worst on the board, which is the one you actually sit
+  // and study. Remember each scroller's offsets and put them back on the fresh
+  // nodes. Keyed by position, which is stable: a pane always rebuilds the same
+  // scrollers in the same document order.
+  const SCROLLERS = '.board-wrap, .plist, .role-tabs, .feed';
+  const scrollMemo = new Map();
+  function repaint(which) {
+    paneEls[which].querySelectorAll(SCROLLERS)
+      .forEach((el, i) => scrollMemo.set(`${which}:${i}`, [el.scrollLeft, el.scrollTop]));
+    mount(paneEls[which], painters[which]());
+    paneEls[which].querySelectorAll(SCROLLERS).forEach((el, i) => {
+      const at = scrollMemo.get(`${which}:${i}`);
+      if (at) { el.scrollLeft = at[0]; el.scrollTop = at[1]; }
+    });
+  }
   function showTab(tab) { ui.tab = tab; for (const k in paneEls) paneEls[k].classList.toggle('show', k === tab); tabbar.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === tab))); }
   const tabbar = h('nav.tabbar', ['players', 'board', 'team', 'feed'].map(t => h('button', { 'data-tab': t, role: 'tab', onclick: () => showTab(t) }, t === 'players' ? 'Players' : t === 'board' ? 'Board' : t === 'team' ? 'My team' : 'Feed')));
   const clockHost = h('div');
