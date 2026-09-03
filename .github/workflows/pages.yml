@@ -16,13 +16,12 @@
 # The repository also has to be public, or on a plan that includes Pages for
 # private repos. It prints the URL when it finishes.
 #
-# To redeploy automatically on every push to main, uncomment the `push:` block.
 name: Deploy to GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
-  # push:
-  #   branches: [main]
 
 permissions:
   contents: read
@@ -42,14 +41,23 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
 
-      # The site is the source tree itself -- index.html loads src/main.js as an
-      # ES module, so there is nothing to compile. Copy only what the page needs.
-      - name: Assemble the site
+      # Deploy the BUNDLE, not the source tree. src/ui/map.js imports d3-geo and
+      # topojson-client by bare specifier, which a browser cannot resolve on its
+      # own; esbuild resolves them from node_modules. Serving src/ raw means that
+      # one unresolvable import takes down the whole module graph and the page
+      # renders blank with its title intact -- which is exactly what shipped the
+      # first time this workflow ran green.
+      - run: npm ci
+      - name: Build the site
         run: |
+          npm run build
           mkdir -p _site
-          cp index.html _site/
-          cp -r src assets _site/
+          cp dist/standalone.html _site/index.html
           touch _site/.nojekyll
 
       # enablement: true turns Pages on for the repo on the first run, so

@@ -121,7 +121,7 @@ It's a model, not a forecast.
 
 ```bash
 npm install
-npm run serve        # http://localhost:8127 — plays the source directly, no build step
+npm run serve        # builds, then serves http://localhost:8127/standalone.html
 npm run build        # -> dist/standalone.html (one file) and dist/index.html (embeddable body)
 npm run build:data   # regenerate the county tables from data/raw/
 npm run check        # parse every module
@@ -142,20 +142,22 @@ docs/SCORING.md   every formula and constant, with its reasoning
 
 ## Deploying
 
-`npm run build` produces two things, and which one you want depends on whether
-you need live leagues:
+**The source tree does not run in a browser on its own.** `src/ui/map.js`
+imports `d3-geo` and `topojson-client` by bare specifier, and a browser cannot
+resolve those without an import map; esbuild resolves them from `node_modules`.
+Serving `src/` raw gets you a blank page with the right title, because that one
+unresolvable import takes down the whole module graph before `main.js` runs.
+So everything you deploy goes through `npm run build` first:
 
 | Build | Where it runs | Practice | Live leagues |
 |---|---|---|---|
-| the source tree (`index.html` + `src/` + `assets/`) | any static host, including GitHub Pages | yes | no |
-| `dist/standalone.html` | one file, opens from the filesystem | yes | no |
+| `dist/standalone.html` | any static host, or straight off the filesystem | yes | no |
 | `dist/index.html` | a host that provides the shared-document runtime | yes | yes |
 
-**GitHub Pages** is wired up in `.github/workflows/pages.yml`. It copies the
-source tree into `_site` — there is no build step, because `index.html` loads
-`src/main.js` as an ES module and nothing fetches at runtime — and deploys it.
-Run it from **Actions → Deploy to GitHub Pages → Run workflow**, and re-run it
-after any change you want live.
+**GitHub Pages** is wired up in `.github/workflows/pages.yml`: it runs
+`npm ci && npm run build` and deploys `dist/standalone.html` as the site's
+`index.html`. It fires on every push to `main`, and can also be run by hand from
+**Actions → Deploy to GitHub Pages → Run workflow**.
 
 Pages has to be switched on once before the first run, at **Settings → Pages →
 Build and deployment → Source: GitHub Actions**. The workflow asks for this
