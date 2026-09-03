@@ -8,7 +8,7 @@
   "scripts": {
     "check": "./tools/check.sh",
     "build": "node tools/build.mjs",
-    "serve": "python3 -m http.server 8127",
+    "serve": "npm run build && python3 -m http.server 8127 --directory dist",
     "build:data": "node tools/build-counties.mjs",
     "balance": "node tools/balance.mjs",
     "build:pollsters": "node tools/build-pollsters.mjs"
