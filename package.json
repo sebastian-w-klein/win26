@@ -8,7 +8,9 @@
   "scripts": {
     "check": "./tools/check.sh",
     "build": "node tools/build.mjs",
-    "serve": "python3 -m http.server 8127"
+    "serve": "python3 -m http.server 8127",
+    "build:data": "node tools/build-counties.mjs",
+    "balance": "node tools/balance.mjs"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,10 @@
   },
   "homepage": "https://github.com/sebastian-w-klein/win26#readme",
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "d3-geo": "^3.1.1",
+    "esbuild": "^0.28.2",
+    "topojson-client": "^3.1.0",
+    "us-atlas": "^3.0.1"
   },
   "private": true,
   "type": "module"

@@ -1,106 +1,67 @@
 # How a draft is scored
 
-Every number in this document is a gameplay dial. The goal was a game that rewards the same
-instincts a real campaign rewards, not a forecast. Constants live in `K` in
-`src/engine/scoring.js`.
+Every number here is a gameplay dial. Constants live in `K` in `src/engine/sim.js`; the environment presets in `src/engine/scoring.js` are set by `npm run balance`.
 
 ## 1. Each pick becomes an effective rating
 
 ```
-effective = OVR  ×  laneFit  ×  formMultiplier
+effective = OVR × laneFit × form
 ```
 
-| Lane fit | × | When |
+| Lane fit | × |
+|---|---|
+| On lane | 1.10 |
+| Free agent / mercenary | 1.00 |
+| Off lane (right party, wrong faction) | 0.92 |
+| Cross-party | 0.62 |
+
+Form is whether they won or lost their most recent cycle (×1.025 / ×0.975), derived from the credit line by an ordered rule list in `src/data/operatives.js` so it is auditable.
+
+## 2. Picks become ten unit ratings and a coalition profile
+
+Each slot feeds its category weighted by slot weight (Campaign Manager 1.6 … Deputy Field Director 1.0). Empty slots score at 70. Unit spec tags add 2.4 to their category; axis tags (`union`, `latino`, `rural`, …) move the roster's coalition appeal on that axis.
+
+## 3. The county simulation
+
+For every county, from the drafting side's point of view:
+
+```
+margin = lean + national + coalition + operation
+```
+
+- **lean** — the county's two-cycle PVI-style lean, D-positive, sign-flipped for Republican rooms.
+- **national** — the environment preset (popular-vote margin) plus how the lane runs against a generic nominee of its own party. Lanes are centered on their side's average so the party baseline is not counted twice.
+- **coalition** — Σ over seven axes of the roster's appeal × the county's z-scored demographic (clipped at ±2.5 SD) × 0.55. Because z-scores are vote-weighted to a national mean of zero, coalition work is nationally neutral: it moves *where* you win, not how much.
+- **operation** — the roster's unit strength, weighted by what the state rewards (emphasis multipliers cubed, or they barely register), minus the opponent's: 90 for a generic campaign, the field average in a league.
+
+State margin is the vote-weighted mean of its counties. A state within 0.6 points goes to whoever has the legal edge — the recount. Win probabilities are logistic in the margin with a scale that widens with lane volatility.
+
+## 4. Head to head and the map
+
+Head to head is the same equation with every term differenced against the rival, so exactly one of them wins each state.
+
+The map's per-room shares are a softmax over each room's county margin (temperature 2.5 points), so they sum to 100% across the room and same-side rosters split a county by how strongly each actually runs there.
+
+## 5. Why the toss-up preset is D+3.5
+
+A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+3.5:
+
+| Preset | Popular vote | D wins head-to-head |
 |---|---|---|
-| On lane | 1.10 | The pick is a natural fit for your lane |
-| Mercenary | 1.00 | Works for whoever is paying |
-| Off lane | 0.92 | Right party, wrong faction |
-| Cross-party | 0.62 | You hired the other side's operative |
+| Republican wave | R+2.0 | 0% |
+| Lean Republican | D+2.5 | 24% |
+| **Toss-up** | **D+3.5** | **50%** |
+| Lean Democratic | D+4.5 | 78% |
+| Democratic wave | D+6.5 | 100% |
 
-Current form — whether they won or lost their most recent cycle — multiplies by 1.025, 0.975
-or 1.0. Form is **derived from the credit line** by an ordered rule list in
-`src/data/operatives.js`, so it is auditable rather than hand-assigned, and the most recent
-cycle wins the match. Jen O'Malley Dillon ran Biden 2020 and chaired Harris 2024, so she
-carries the 2024 loss.
-
-## 2. Picks become ten unit ratings
-
-Each slot contributes its effective rating to its category, weighted by slot weight — Campaign
-Manager (1.6) counts far more than Deputy Field Director (1.0). Empty slots score at
-replacement level, 70. Spec tags then add: unit tags (`turnout`, `viral`, `analytics`, …) add
-2.4 to their category, axis tags (`union`, `latino`, `rural`, …) feed the coalition profile.
-
-## 3. Ratings meet the map
-
-For each of eleven battlegrounds, margin is four things added together:
+## 6. The draft score
 
 ```
-margin = PVI + national + coalition + operation
+score = 1000 × ( 0.40·map + 0.25·units + 0.15·fit + 0.20·tippingPoint )
 ```
 
-**PVI** — Cook's 2025 vintage, flipped to your side's point of view.
+`map` is electoral votes normalized over 170–370; `tippingPoint` is the margin in the state that delivered the 270th vote.
 
-**National** — the environment preset, plus how your lane runs against a generic nominee of
-your own party. Lane appeal is *centered* on its own side's average, because PVI already
-encodes a generic Democrat against a generic Republican. Without centering, every lane would
-double-count its own party's baseline.
+## Known asymmetries
 
-**Coalition** — your lane's appeal across seven electorate axes, dotted with that state's
-electorate weights, plus what your specialist hires add. The roster half is measured against
-a baseline of 0.50, which is what a typical drafted roster does — measured over 2,640
-simulated state-rosters. Without that subtraction, specialist tags were a free +0.7 margin
-for everyone, since no tag is ever negative.
-
-**Operation** — your unit ratings weighted by what the state rewards, minus the opposition's.
-State emphasis multipliers are raised to the **third power**, because raw multipliers of
-1.05–1.40 barely move a ten-category weighted mean. Before that fix, the operation term was
-±0.36 across the whole map — effectively a constant. After it, a field-heavy roster is worth
-about 1.9 margin points more in Wisconsin than in Virginia.
-
-The opposing operation is rated 90 in solo mode. In a league it becomes the field's own
-average, so a strong league is a harder election night for everyone in it.
-
-Inside a 0.6-point margin, a decisive edge in legal firepower flips the state — the recount.
-
-## 4. Why the toss-up preset is D+3.6
-
-A tied national popular vote does not produce a tied Electoral College on this map, so the
-environment labels and their numbers deliberately do not line up.
-
-Democrats have exactly one cheap path to 270: hold the four states leaning their way (NM, VA,
-MN, NH) and then sweep Pennsylvania, Michigan **and** Wisconsin — which lands on 270 on the
-nose. Republicans need the Sunbelt plus one. Sweeping a blue wall priced at R+2, R+1 and R+2
-takes a real national win, so against an equally good campaign the Electoral College does not
-become a coin flip until about **D+3.6**.
-
-That is not a guess. It is where head-to-head matchups actually balance, measured over 480
-simulated matchups per setting:
-
-| Environment | Popular vote | D wins head-to-head |
-|---|---|---|
-| Republican wave | R+1 | 0% |
-| Lean Republican | D+1.5 | 0% |
-| **Toss-up** | **D+3.6** | **49%** |
-| Lean Democratic | D+5.5 | 100% |
-| Democratic wave | D+8 | 100% |
-
-Median gap at toss-up: 14 electoral votes.
-
-## 5. The draft score
-
-```
-score = 1000 × ( 0.45·map + 0.25·units + 0.15·fit + 0.15·tippingPoint )
-```
-
-`map` is the share of the 125 contested electoral votes you captured, measured from your own
-side's safe-state floor — the two sides have different floors (D 194, R 219), so scoring
-against a shared range would hand Republicans free points for the same achievement.
-
-`tippingPoint` is the margin in the state that delivered your 270th electoral vote.
-
-## Known asymmetry
-
-Tech Right and Libertarian Right can field only ~85% of an ideal roster, against 94–98% for
-the four major lanes, because the pool genuinely thins out there. They are flagged **hard
-mode** in the lane picker rather than papered over — it is a real strategic cost, and the
-bots avoid those lanes on their own for exactly that reason.
+Libertarian Right has nine on-lane names in the pool and Tech Right nineteen, against 65–106 for the major lanes. They are flagged *hard mode* in the lane picker rather than papered over; the bots avoid them on their own.
