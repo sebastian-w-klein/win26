@@ -12,6 +12,7 @@ import { AXES, LANES } from '../data/lanes.js';
 import { BATTLEGROUNDS } from '../data/battlegrounds.js';
 import { ROLES, CATEGORIES } from '../data/roles.js';
 import { FORM_MULT } from '../data/operatives.js';
+import { POLLSTER_RATINGS } from '../data/pollster-ratings.js';
 
 export const K = {
   REPLACEMENT: 70,       // rating an empty slot is scored at
@@ -26,6 +27,8 @@ export const K = {
   EMPHASIS_POWER: 3,     // how sharply a state's emphasis multipliers bite
   PROB_BASE: 1.6, PROB_VOL: 0.40,   // county logistic scale = base + vol × volatility
   STATE_PROB_BASE: 1.2, STATE_PROB_VOL: 0.30,
+  POLL_BIAS: 0.18,       // margin points per point of your pollster's house bias
+  POLL_BIAS_CAP: 0.6,
   RECOUNT_BAND: 0.6, RECOUNT_FLOOR: 84
 };
 
@@ -105,9 +108,13 @@ export function rateRoster(roster, lane) {
   for (const c of CAT_IDS) units[c] = Math.max(0, Math.min(100, num[c] / den[c] + bonus[c]));
   const rosterAppeal = Object.fromEntries(AXES.map(a => [a, Math.max(-K.AXIS_CAP, Math.min(K.AXIS_CAP, axisAdd[a]))]));
   const appeal = Object.fromEntries(AXES.map(a => [a, (lane ? lane.appealCentered[a] : 0) + rosterAppeal[a]]));
+  // Your chief pollster's published house bias, positive toward Democrats.
+  const pollster = roster['chief-pollster'];
+  const houseBias = pollster?.firm ? (POLLSTER_RATINGS[pollster.firm]?.bias ?? 0) : 0;
+
   const filled = slots.filter(s => s.pick);
   return {
-    units, appeal, rosterAppeal, laneAppeal: lane ? lane.appealCentered : {}, slots,
+    units, appeal, rosterAppeal, houseBias, laneAppeal: lane ? lane.appealCentered : {}, slots,
     overall: CAT_IDS.reduce((s, c) => s + units[c] * CAT_SHARE[c], 0),
     legal: units.FLOATER + (roster['general-counsel']?.specs.includes('legal') ? 6 : 0),
     filledCount: filled.length,
@@ -137,6 +144,18 @@ export function prepare(team) {
 }
 
 const logistic = (m, s) => 1 / (1 + Math.exp(-m / s));
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+/**
+ * What your own pollster's history does to you. A firm whose published polls
+ * have historically overstated YOUR side flatters you into spending in the
+ * wrong places; one that has been tough on your side keeps you running scared.
+ * Returns margin points, positive when the pollster helps you.
+ */
+export function pollingEdge(rating, side) {
+  const flatter = (side === 'D' ? 1 : -1) * (rating.houseBias || 0);
+  return clamp(-flatter * K.POLL_BIAS, -K.POLL_BIAS_CAP, K.POLL_BIAS_CAP);
+}
 
 /**
  * Run one team through every county and state.
@@ -153,6 +172,7 @@ export function simulate(team, { env = 0, opponent = K.OPPONENT, shift = 0, vs =
   const sState = K.STATE_PROB_BASE + K.STATE_PROB_VOL * lane.volatility;
 
   const appeal = AXES.map(a => T.rating.appeal[a] - (V ? V.rating.appeal[a] : 0));
+  const polling = pollingEdge(T.rating, lane.side) - (V ? pollingEdge(V.rating, V.lane.side) : 0);
   const counties = new Array(COUNTIES.length);
   const stateAgg = {};
   for (let i = 0; i < COUNTIES.length; i++) {
@@ -161,7 +181,7 @@ export function simulate(team, { env = 0, opponent = K.OPPONENT, shift = 0, vs =
     for (let j = 0; j < AXES.length; j++) coalition += appeal[j] * c.z[AXES[j]];
     coalition *= K.COUNTY_AXIS;
     const ops = (T.ops[c.st] - (V ? V.ops[c.st] : opponent)) * K.OPS_SCALE;
-    const margin = sign * c.lean + national + coalition + ops;
+    const margin = sign * c.lean + national + coalition + ops + polling;
     counties[i] = { c, margin, p: logistic(margin, sCounty), coalition, ops };
     const s = (stateAgg[c.st] ||= { m: 0, w: 0, coal: 0, ops: 0 });
     s.m += margin * c.votes; s.w += c.votes; s.coal += coalition * c.votes; s.ops += ops * c.votes;
@@ -182,7 +202,7 @@ export function simulate(team, { env = 0, opponent = K.OPPONENT, shift = 0, vs =
   let running = 0, tipping = null;
   for (const s of ordered) { running += s.st.ev; if (running >= EV_TO_WIN) { tipping = s; break; } }
 
-  return { team: T, vs: V, counties, states, ev, evOpp: 538 - ev, expectedEv, won: ev >= EV_TO_WIN, tipping, env, national };
+  return { team: T, vs: V, counties, states, ev, evOpp: 538 - ev, expectedEv, won: ev >= EV_TO_WIN, tipping, env, national, polling };
 }
 
 export { COUNTIES_BY_STATE };

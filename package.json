@@ -10,7 +10,8 @@
     "build": "node tools/build.mjs",
     "serve": "python3 -m http.server 8127",
     "build:data": "node tools/build-counties.mjs",
-    "balance": "node tools/balance.mjs"
+    "balance": "node tools/balance.mjs",
+    "build:pollsters": "node tools/build-pollsters.mjs"
   },
   "repository": {
     "type": "git",

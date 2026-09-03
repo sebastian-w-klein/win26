@@ -13,6 +13,8 @@
 //        unit tags  -> turnout, persuasion, earned-media, small-dollar,
 //                      bigmoney, viral, analytics, ops, legal
 
+import { POLLSTER_RATINGS } from './pollster-ratings.js';
+
 const P = [];
 const o = (role, name, org, side, lanes, ovr, specs, credit) =>
   P.push({
@@ -199,15 +201,49 @@ o('data-director', 'Data Trust', 'Data Trust', 'R', 'fusionist-con maga-populist
 o('data-director', 'TargetSmart', 'TargetSmart', 'D', 'liberal-inst mainstream-prog', 79, 'analytics young', 'Democratic voter data and targeting firm');
 o('data-director', 'Echelon Insights', 'Echelon', 'R', 'fusionist-con tech-right', 78, 'analytics latino', 'The Republican data and polling firm co-founded by Patrick Ruffini and Kristen Soltis Anderson');
 
-/* ── 20. CHIEF POLLSTER ─────────────────────────────────────────────────── */
-o('chief-pollster', 'Tony Fabrizio', 'Fabrizio Ward', 'R', 'maga-populist fusionist-con', 90, 'rural analytics', "Trump's lead pollster in 2016, 2020 and 2024");
-o('chief-pollster', 'John Anzalone', 'Impact Research', 'D', 'liberal-inst abundance-mod', 86, 'rural persuasion', 'Lead pollster for Obama 2012 and Biden 2020');
-o('chief-pollster', 'Geoff Garin', 'Hart Research', 'D', 'liberal-inst mainstream-prog', 84, 'analytics suburban', 'President of Hart Research; lead pollster for Harris 2024');
-o('chief-pollster', 'Molly Murphy', 'Impact Research', 'D', 'liberal-inst abundance-mod', 83, 'suburban analytics', 'President of Impact Research; pollster for the Biden and Harris campaigns');
-o('chief-pollster', 'Celinda Lake', 'Lake Research Partners', 'D', 'prog-populist liberal-inst', 82, 'union senior', 'Co-lead pollster for Biden 2020');
-o('chief-pollster', 'Kristen Soltis Anderson', 'Echelon Insights', 'R', 'fusionist-con tech-right abundance-mod', 81, 'young suburban', 'Republican pollster and co-founder of Echelon Insights');
-o('chief-pollster', 'Ben Tulchin', 'Tulchin Research', 'D', 'prog-populist mainstream-prog', 77, 'young union', 'Pollster for Bernie Sanders 2016 and 2020');
-o('chief-pollster', 'John McLaughlin', 'McLaughlin & Associates', 'R', 'maga-populist', 76, 'rural latino', 'A Trump campaign pollster across multiple cycles');
+/* ── 20. CHIEF POLLSTER ───────────────────────────────────────────────────
+ * The one slot with real published numbers behind it. Every card names a firm
+ * in the Silver Bulletin ratings; OVR comes from that firm's rating rather
+ * than an editorial guess, and each card carries the firm's grade, poll count
+ * and house bias. `pl(firm, ...)` takes the OVR from the ratings table; `adj`
+ * marks a named partner as a notch below the shop itself.
+ */
+const pl = (name, org, side, lanes, firm, specs, credit, adj = 0) => {
+  const r = POLLSTER_RATINGS[firm];
+  if (!r) throw new Error(`no Silver Bulletin rating for ${firm}`);
+  o('chief-pollster', name, org, side, lanes, r.ovr + adj, specs, credit);
+  P.at(-1).firm = firm;
+};
+
+/* Democratic */
+pl('John Anzalone', 'Impact Research', 'D', 'liberal-inst abundance-mod labor-liberal', 'Impact Research', 'rural persuasion', 'Lead pollster for Obama 2012 and Biden 2020');
+pl('Geoff Garin', 'Hart Research', 'D', 'liberal-inst mainstream-prog multiracial-coalition', 'Garin-Hart-Yang Research Group', 'analytics suburban', 'President of Hart Research; lead pollster for Harris 2024');
+pl('GQR', 'Greenberg Quinlan Rosner', 'D', 'liberal-inst mainstream-prog labor-liberal', 'Greenberg Quinlan Rosner', 'analytics union', 'The Democratic polling firm founded by Stan Greenberg, pollster to Bill Clinton in 1992');
+pl('Anna Greenberg', 'GQR', 'D', 'mainstream-prog liberal-inst multiracial-coalition', 'Greenberg Quinlan Rosner', 'suburban young', 'Senior vice president of GQR Research', -2);
+pl('Celinda Lake', 'Lake Research Partners', 'D', 'prog-populist liberal-inst labor-liberal', 'Lake Research Partners', 'union senior', 'Co-lead pollster for Biden 2020');
+pl('Cornell Belcher', 'brilliant corners', 'D', 'multiracial-coalition liberal-inst', 'brilliant corners Research & Strategies', 'black analytics', 'Pollster for Obama 2008 and 2012');
+pl('GBAO', 'GBAO Strategies', 'D', 'labor-liberal mainstream-prog liberal-inst', 'GBAO', 'union turnout', 'The Democratic polling firm behind a long run of Senate campaigns and Navigator Research');
+pl('Molly Murphy', 'Impact Research', 'D', 'liberal-inst abundance-mod', 'Impact Research', 'suburban analytics', 'President of Impact Research; pollster for the Biden and Harris campaigns', -1);
+pl('Jefrey Pollock', 'Global Strategy Group', 'D', 'abundance-mod liberal-inst multiracial-coalition', 'Global Strategy Group', 'suburban latino', 'President of Global Strategy Group');
+pl('David Binder', 'David Binder Research', 'D', 'liberal-inst abundance-mod', 'David Binder Research', 'persuasion analytics', 'Focus group and polling lead for Obama and Biden 2020');
+pl('Ben Tulchin', 'Tulchin Research', 'D', 'prog-populist mainstream-prog labor-liberal', 'Tulchin Research', 'young union', 'Pollster for Bernie Sanders 2016 and 2020');
+pl('Data for Progress', 'Data for Progress', 'D', 'prog-populist mainstream-prog', 'Data for Progress', 'young analytics', 'The progressive polling and policy shop');
+pl('Change Research', 'Change Research', 'D', 'mainstream-prog prog-populist', 'Change Research', 'young turnout', 'Democratic online polling firm built for low-cost, high-frequency tracking');
+
+/* Republican */
+pl('Tony Fabrizio', 'Fabrizio Ward', 'R', 'maga-populist fusionist-con', 'Fabrizio, Lee & Associates', 'rural analytics', "Trump's lead pollster in 2016, 2020 and 2024");
+pl('Cygnal', 'Cygnal', 'R', 'fusionist-con maga-populist security-hawk', 'Cygnal', 'analytics rural', 'Republican polling and analytics firm with one of the strongest recent public track records');
+pl('Public Opinion Strategies', 'Public Opinion Strategies', 'R', 'fusionist-con security-hawk', 'Public Opinion Strategies', 'analytics suburban', 'The largest Republican polling firm, in business since 1991');
+pl('Kristen Soltis Anderson', 'Echelon Insights', 'R', 'fusionist-con tech-right abundance-mod security-hawk', 'Echelon Insights', 'young suburban', 'Republican pollster and co-founder of Echelon Insights');
+pl('Susquehanna Polling & Research', 'Susquehanna', 'R', 'maga-populist fusionist-con', 'Susquehanna Polling & Research Inc.', 'rural senior', 'Pennsylvania-based Republican polling firm');
+pl('Glen Bolger', 'Public Opinion Strategies', 'R', 'fusionist-con security-hawk', 'Public Opinion Strategies', 'analytics senior', 'Co-founder of Public Opinion Strategies', -2);
+pl('Tarrance Group', 'The Tarrance Group', 'R', 'fusionist-con security-hawk', 'Tarrance Group', 'analytics senior', 'Longstanding Republican survey research firm');
+pl('Chris Wilson', 'WPA Intelligence', 'R', 'fusionist-con social-conservative', 'WPA Intelligence', 'analytics rural', 'Pollster, Ted Cruz 2016; chief executive of WPA Intelligence');
+pl('Whit Ayres', 'North Star Opinion Research', 'R', 'security-hawk fusionist-con', 'North Star Opinion Research', 'suburban latino', 'Pollster for Marco Rubio and a leading Republican voice on demographic change');
+pl('Adam Geller', 'National Research Inc.', 'R', 'maga-populist social-conservative', 'National Research', 'rural analytics', 'Pollster, Trump 2016');
+pl('co/efficient', 'co/efficient', 'R', 'maga-populist libertarian-r', 'co/efficient', 'rural viral', 'Republican firm that polls aggressively in low-cost, high-volume batches');
+pl('Meeting Street Insights', 'Meeting Street', 'R', 'fusionist-con social-conservative', 'Meeting Street Insights', 'senior rural', 'Republican survey research firm founded by Neil Newhouse alumni');
+pl('McLaughlin & Associates', 'McLaughlin & Associates', 'R', 'maga-populist social-conservative', 'McLaughlin & Associates', 'rural latino', 'A Trump campaign pollster across multiple cycles');
 
 /* ── 21. GENERAL COUNSEL ────────────────────────────────────────────────── */
 o('general-counsel', 'Marc Elias', 'Elias Law Group', 'D', 'prog-populist mainstream-prog liberal-inst abundance-mod', 92, 'legal analytics', "The Democratic Party's principal election lawyer");
@@ -352,15 +388,6 @@ o('data-director', 'Alex Lundry', 'Deep Root Analytics', 'R', 'fusionist-con sec
 o('data-director', 'Deep Root Analytics', 'Deep Root', 'R', 'fusionist-con maga-populist', 77, 'analytics senior', 'Republican television targeting and analytics firm');
 
 /* chief pollster */
-o('chief-pollster', 'Cornell Belcher', 'Brilliant Corners', 'D', 'multiracial-coalition liberal-inst', 82, 'black analytics', 'Pollster for Obama 2008 and 2012');
-o('chief-pollster', 'Glen Bolger', 'Public Opinion Strategies', 'R', 'fusionist-con security-hawk', 80, 'analytics suburban', 'Co-founder of Public Opinion Strategies, the largest Republican polling firm');
-o('chief-pollster', 'Jefrey Pollock', 'Global Strategy Group', 'D', 'abundance-mod liberal-inst', 80, 'suburban analytics', 'President of Global Strategy Group');
-o('chief-pollster', 'David Binder', 'David Binder Research', 'D', 'liberal-inst abundance-mod', 79, 'persuasion analytics', 'Focus group and polling lead for Obama and Biden 2020');
-o('chief-pollster', 'Robert Blizzard', 'Public Opinion Strategies', 'R', 'fusionist-con security-hawk', 79, 'analytics senior', 'Partner at Public Opinion Strategies');
-o('chief-pollster', 'Anna Greenberg', 'GQR', 'D', 'mainstream-prog liberal-inst', 78, 'suburban young', 'Senior vice president of GQR Research');
-o('chief-pollster', 'Chris Wilson', 'WPA Intelligence', 'R', 'fusionist-con social-conservative', 78, 'analytics rural', 'Pollster, Ted Cruz 2016; chief executive of WPA Intelligence');
-o('chief-pollster', 'Whit Ayres', 'North Star Opinion Research', 'R', 'security-hawk fusionist-con', 77, 'suburban latino', 'Pollster for Marco Rubio and a leading Republican voice on demographic change');
-o('chief-pollster', 'Adam Geller', 'National Research Inc.', 'R', 'maga-populist', 74, 'rural analytics', 'Pollster, Trump 2016');
 
 /* general counsel */
 o('general-counsel', 'Ben Ginsberg', 'Independent', 'R', 'fusionist-con security-hawk', 86, 'legal persuasion', 'National counsel, Bush-Cheney 2000 and 2004; counsel to Mitt Romney 2012');

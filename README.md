@@ -44,6 +44,20 @@ data/raw/         vendored sources, see SOURCES.md
 docs/SCORING.md   every formula and constant, with its reasoning
 ```
 
+## The pollsters
+
+The Chief Pollster slot is graded on real data: **Silver Bulletin's January 2026
+pollster ratings**, 540 firms deep. Each of the 26 pollster cards names a rated
+firm — including GQR and GBAO — and carries its letter grade, rated poll count,
+house bias, hit rate and average error. OVR comes from the firm's Predictive
+Plus-Minus, mean-reverted toward the card's editorial rating by poll count,
+because campaign pollsters mostly poll privately and some are rated on a handful
+of public releases.
+
+House bias is a mechanic, not decoration: hiring a firm whose polls have
+historically flattered your own side costs you margin everywhere, because a
+campaign that believes them spends in the wrong states.
+
 ## About the data
 
 Everyone in the pool is a real, public political professional, firm or organization; the credit line on every card is public record. **The ratings are not.** OVR, cost and spec tags are invented gameplay numbers tuned so the draft plays well — not an assessment of anyone's ability — and no one in the pool has anything to do with this game. County demographics come from the Census via MIT Election Lab; Alaska has no county-level source and uses statewide values. Everything here is a model, not a forecast.

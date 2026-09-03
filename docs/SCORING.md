@@ -36,6 +36,40 @@ margin = lean + national + coalition + operation
 
 State margin is the vote-weighted mean of its counties. A state within 0.6 points goes to whoever has the legal edge — the recount. Win probabilities are logistic in the margin with a scale that widens with lane volatility.
 
+## 3b. Your pollster
+
+The Chief Pollster slot is the one place with published outside numbers behind it.
+Every card names a firm in the **Silver Bulletin pollster ratings** (January 2026),
+and its OVR is derived from that firm's Predictive Plus-Minus rather than an
+editorial guess:
+
+```
+sbRating = 81 − 9.8 × predictivePlusMinus        (clipped to 58–95)
+OVR      = w · sbRating + (1 − w) · editorial     where w = polls / (polls + 15)
+```
+
+The reversion matters because Silver Bulletin rates *released public polls* in the
+last three weeks of a race, and campaign pollsters work mostly in private. Public
+Opinion Strategies has 80 rated polls; Fabrizio Lee has 11; brilliant corners has
+one. A rating built on one poll is noise, so thin samples fall back toward the
+card's editorial rating — the same move Silver Bulletin makes internally.
+
+Each firm's **house bias** then becomes a game mechanic. A firm whose published
+polls have historically overstated *your* side flatters you into spending in the
+wrong places; one that has been tough on your side keeps you running scared:
+
+```
+flatter = (side === 'D' ? +1 : −1) × houseBias
+polling = clamp(−flatter × 0.18, ±0.6)          margin points, everywhere
+```
+
+It is deliberately small — at most ±0.48 across the current pool, against ±2.8
+for the operation term — so it is a tiebreaker between two good pollsters, not a
+reason to hire the other party's. It does create one real draft decision: Cygnal
+is both the best-rated Republican firm (A, 58 polls) *and* carries a D+2.0 house
+lean, so it is worth +0.37 to a Republican war room. GQR is an A− with 62 polls
+but its D+2.2 lean costs a Democratic war room 0.39.
+
 ## 4. Head to head and the map
 
 Head to head is the same equation with every term differenced against the rival, so exactly one of them wins each state.
@@ -44,15 +78,20 @@ The map's per-room shares are a softmax over each room's county margin (temperat
 
 ## 5. Why the toss-up preset is D+3.5
 
-A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+3.5:
+A tied popular vote is not a tied Electoral College on this map. Democrats have to sweep Pennsylvania, Michigan and Wisconsin (about R+2, R+1, R+1.7 in the county data) to reach 270. Measured over 24 eight-seat bot leagues, the head-to-head coin flip lands at D+4.0:
 
 | Preset | Popular vote | D wins head-to-head |
 |---|---|---|
 | Republican wave | R+2.0 | 0% |
-| Lean Republican | D+2.5 | 24% |
-| **Toss-up** | **D+3.5** | **50%** |
-| Lean Democratic | D+4.5 | 78% |
+| Lean Republican | D+2.5 | 6% |
+| **Toss-up** | **D+4.0** | **49%** |
+| Lean Democratic | D+5.0 | 77% |
 | Democratic wave | D+6.5 | 100% |
+
+The toss-up moved from D+3.5 to D+4.0 when the pollster house-effect mechanic
+went in: Democratic firms in the Silver Bulletin data carry larger house biases
+than Republican ones, so Democratic war rooms eat more flattery on average and
+needed the map re-centered.
 
 ## 6. The draft score
 
