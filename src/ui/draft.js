@@ -126,8 +126,16 @@ export function renderDraft(root, app, store) {
     for (const p of L.picks) byCell[`${p.round}:${p.teamIdx}`] = p;
     const current = order[L.picks.length];
     return h('div.card',
+      h('div.catkey', Object.values(CATEGORIES).map(c =>
+        h('span', { style: { '--cat': c.color } }, c.label))),
       h('div.board-wrap', h('table.board',
-        h('thead', h('tr', h('th', ''), L.teams.map(t => h('th', { class: t.idx === store.meIdx ? 'me' : '' }, t.name, h('div.faint', { style: { fontWeight: 400 } }, t.lane ? t.lane.short : '·'))))),
+        // Two colour channels, the way a fantasy board reads: the war room's
+        // party rides in its column header, which is sticky and so always on
+        // screen, and each pick is filled with its role's category colour.
+        h('thead', h('tr', h('th', ''), L.teams.map(t => h('th', {
+            class: t.idx === store.meIdx ? 'me' : '',
+            style: t.lane ? { '--side': SIDE[t.lane.side].color } : {}
+          }, t.name, h('div.lane-tag', t.lane ? t.lane.short : '·'))))),
         h('tbody', [...Array(ROUNDS).keys()].map(i => {
           const r = i + 1;
           return h('tr', h('td.rnd', r === 1 ? 'Lane' : `R${r}`), L.teams.map(t => {
