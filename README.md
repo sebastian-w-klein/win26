@@ -42,13 +42,23 @@ anyone who opens it. Practice drafts work there; live leagues don't, because
 the shared database that syncs picks between browsers only exists on the
 Claude link above.
 
-Two steps, both in the GitHub web UI:
+The workflow is already on `main`. What's left needs repository settings, which
+only the owner can change:
 
-1. **Settings → General → Change visibility → Public.** Pages is free only for
-   public repositories. (On a paid GitHub plan you can skip this and keep the
-   repo private.)
-2. **Actions → Deploy to GitHub Pages → Run workflow.** It prints the URL when
+1. **Settings → General → Danger Zone → Change visibility → Public.** Pages is
+   free only for public repositories. (On a paid GitHub plan you can skip this
+   and keep the repo private.)
+2. **Settings → Pages → Build and deployment → Source: GitHub Actions.** The
+   workflow tries to do this itself, so check here only if step 3 fails with
+   `Create Pages site failed`.
+3. **Actions → Deploy to GitHub Pages → Run workflow.** It prints the URL when
    it finishes. Re-run it after any change you want live.
+
+Before flipping to public, know what becomes visible: the whole history, and
+that means 345 named real political professionals carrying invented OVR and
+cost numbers. The disclaimer above covers it, but it stops being a private
+joke at that point. The vendored Silver Bulletin ratings CSV in `data/raw/` is
+also worth a look against how you'd want to redistribute it publicly.
 
 ## How a draft goes
 
