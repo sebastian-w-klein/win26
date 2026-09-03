@@ -196,10 +196,15 @@ export function renderDraft(root, app, store) {
       store.kind === 'local' && h('button.btn.sm.ghost', { onclick: () => { if (confirm('End this practice draft and see results with what you have?')) store.finish(); } }, 'End draft')
     ),
     h('div', { style: { marginTop: '12px' } }, clockHost),
+    // The board is the one pane everybody reads at a glance, and it is also the
+    // widest thing on the screen -- 12 war rooms across. Boxed into a grid
+    // column it showed about three of them and hid the rest behind a scrollbar,
+    // so it gets the full width of the desk on its own row.
+    h('div.deskboard', paneEls.board),
     h('div.desk.three',
       h('div', paneEls.players),
-      h('div', paneEls.board, h('div', { style: { height: '14px' } }), paneEls.feed),
-      h('div', paneEls.team)
+      h('div', paneEls.team),
+      h('div', paneEls.feed)
     ),
     tabbar
   );

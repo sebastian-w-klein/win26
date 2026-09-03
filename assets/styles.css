@@ -182,7 +182,8 @@ input, select { font-family: inherit; font-size: inherit; color: inherit; }
 .clockbar .who { font-weight: 700; font-size: 16px; }
 .clockbar .next { font-size: 12px; color: var(--ink-dim); }
 .desk { display: grid; gap: 14px; margin-top: 14px; }
-@media (min-width: 900px) { .desk { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } .desk.three { grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr) minmax(300px, 0.8fr); } }
+.deskboard { margin-top: 14px; }
+@media (min-width: 900px) { .desk { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } .desk.three { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 1fr) minmax(280px, 0.85fr); } }
 .pane { display: none; }
 .pane.show { display: block; }
 @media (min-width: 900px) { .pane { display: block; } }
@@ -224,9 +225,9 @@ input, select { font-family: inherit; font-size: inherit; color: inherit; }
 @media (min-width: 900px) { .sheet { position: sticky; bottom: 12px; border: 1px solid var(--line-2); border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.4); } }
 
 /* board grid */
-.board-wrap { overflow: auto; max-height: min(70vh, 760px); }
+.board-wrap { overflow: auto; max-height: min(58vh, 620px); }
 table.board { border-collapse: separate; border-spacing: 4px; min-width: 100%; }
-table.board th { position: sticky; top: 0; background: var(--surface); z-index: 1; padding: 6px 4px; font-family: var(--mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-dim); white-space: nowrap; min-width: 110px; }
+table.board th { position: sticky; top: 0; background: var(--surface); z-index: 1; padding: 6px 4px; font-family: var(--mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-dim); min-width: 100px; max-width: 124px; }
 table.board th.me { color: var(--accent); }
 table.board td.rnd { position: sticky; left: 0; background: var(--surface); font-family: var(--mono); font-size: 10px; color: var(--ink-faint); padding: 0 6px; z-index: 1; }
 .pickcard { border-radius: 4px; padding: 5px 7px; min-height: 40px; font-size: 12px; line-height: 1.2; background: var(--surface-2); border-left: 3px solid var(--cat, var(--line-2)); }
