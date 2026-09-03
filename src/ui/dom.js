@@ -7,13 +7,26 @@ export function h(spec, props, ...kids) {
   for (const [k, v] of Object.entries(props || {})) {
     if (v == null || v === false) continue;
     if (k === 'class') el.className += (el.className ? ' ' : '') + v;
-    else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+    else if (k === 'style' && typeof v === 'object') setStyle(el, v);
     else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'html') el.innerHTML = v;
     else el.setAttribute(k, v === true ? '' : String(v));
   }
   add(el, kids);
   return el;
+}
+/**
+ * Custom properties have to go through setProperty: assigning them onto a
+ * CSSStyleDeclaration is silently dropped, so every --cat and --side the UI
+ * set this way was falling back to its default and the category and party
+ * colours never appeared.
+ */
+function setStyle(el, style) {
+  for (const [prop, val] of Object.entries(style)) {
+    if (val == null || val === false) continue;
+    if (prop.startsWith('--')) el.style.setProperty(prop, String(val));
+    else el.style[prop] = val;
+  }
 }
 function add(el, kids) {
   for (const kid of kids) {
