@@ -5,9 +5,9 @@
 # shared database that only exists on the published Claude artifact. This is
 # the practice-draft build.
 #
-# Before the first run, GitHub Pages has to be available for this repository:
-# it is free for public repos, and needs a paid plan for private ones. Then run
-# this workflow once from the Actions tab; it prints the URL when it finishes.
+# GitHub Pages has to be AVAILABLE for this repository before the first run:
+# it is free for public repos and needs a paid plan for private ones. The run
+# turns Pages on itself; it prints the URL when it finishes.
 #
 # To redeploy automatically on every push to main, uncomment the `push:` block.
 name: Deploy to GitHub Pages
@@ -45,7 +45,11 @@ jobs:
           cp -r src assets _site/
           touch _site/.nojekyll
 
+      # enablement: true turns Pages on for the repo on the first run, so
+      # there is no Settings -> Pages step to do by hand first.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
