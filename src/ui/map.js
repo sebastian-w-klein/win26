@@ -128,23 +128,42 @@ export function renderMap(root, model, { meIdx = 0 } = {}) {
     const f = (mode === 'county' ? counties : states)[i];
     return f ? { f, x: clientX - r.left, y: clientY - r.top } : null;
   }
+  // Signed margin/lean, D-positive in the data, printed the way a tally sheet
+  // would print it.
+  const dr = v => `${v >= 0 ? 'D+' : 'R+'}${Math.abs(v).toFixed(1)}`;
+
   function describe(f) {
     if (mode === 'county') {
       const c = COUNTY_BY_FIPS[f.id];
-      return { title: `${c.name}${/city|County|Parish|Borough|Census Area|Municipality/i.test(c.name) ? '' : ' County'}`, sub: `${STATE_BY_FIPS[f.id.slice(0, 2)].name} · ${c.votes.toLocaleString()} votes in 2024 · lean ${c.lean >= 0 ? 'D+' : 'R+'}${Math.abs(c.lean).toFixed(1)}`, ps: model.byFips[f.id] };
+      const d = c.demo;
+      return {
+        title: `${c.name}${/city|County|Parish|Borough|Census Area|Municipality/i.test(c.name) ? '' : ' County'}`,
+        sub: `${STATE_BY_FIPS[f.id.slice(0, 2)].name} · ${c.votes.toLocaleString()} votes in 2024 · lean ${dr(c.lean)}`,
+        // The measured county, not the model: how much it has moved across four
+        // cycles, which way it has moved since 2012, and how big a third-party
+        // vote it actually casts.
+        meta: `elastic ${d.elasticity.toFixed(2)}× · drift ${d.drift >= 0 ? 'D' : 'R'}+${Math.abs(d.drift).toFixed(0)} · 3rd ${d.protest.toFixed(1)}%`,
+        ps: model.byFips[f.id]
+      };
     }
     const st = STATE_BY_FIPS[f.id];
-    return { title: st.name, sub: `${st.ev} electoral votes · lean ${st.lean >= 0 ? 'D+' : 'R+'}${Math.abs(st.lean).toFixed(1)}`, ps: model.byState[st.abbr] };
+    return {
+      title: st.name,
+      sub: `${st.ev} electoral votes · lean ${dr(st.lean)}`,
+      meta: `elastic ${st.elasticity.toFixed(2)}× · drift ${st.drift >= 0 ? 'D' : 'R'}+${Math.abs(st.drift).toFixed(0)} · 3rd ${st.third.toFixed(1)}%`,
+      ps: model.byState[st.abbr]
+    };
   }
 
   /* ── tooltip ─────────────────────────────────────────────────────────── */
   const tip = h('div.map-tip.hidden');
   function showTip(target, isPinned) {
-    const { title, sub, ps } = describe(target.f);
+    const { title, sub, meta, ps } = describe(target.f);
     const order = model.entries.map((e, i) => ({ e, i, p: ps[i] })).sort((a, b) => b.p - a.p);
     const w = order[0].i;
     mount(tip,
       h('h4', title), h('div.sub', sub),
+      h('div.sub.faint', { title: 'Elasticity: cycle-to-cycle movement since 2012, 1.00 = the national average county. Drift: lean in 2024 minus lean in 2012. 3rd: third-party share of votes cast.' }, meta),
       order.map(({ e, i, p }) => h('div.trow', { class: i === w ? 'win' : '' },
         h('i', { style: { background: e.color } }),
         h('span.ellipsis', e.team.name + (i === meIdx ? ' (you)' : '')),

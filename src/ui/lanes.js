@@ -1,11 +1,11 @@
 import { h } from './dom.js';
-import { AXES, AXIS_LABEL, SIDE } from '../data/lanes.js';
+import { AXES, AXIS_LABEL, AXIS_SHORT, SIDE } from '../data/lanes.js';
 import { DEPTH_BY_LANE } from '../engine/draft.js';
 
 export function laneAxes(lane) {
   return h('div.axes', AXES.map(a => {
     const v = lane.appeal[a], w = Math.min(50, Math.abs(v) / 3 * 50);
-    return h('div.axis-row', h('span', AXIS_LABEL[a].replace(' voters', '').replace(' households', ' HH')),
+    return h('div.axis-row', h('span', { title: AXIS_LABEL[a] }, AXIS_SHORT[a]),
       h('div.axis-bar', h('i', { style: { left: v >= 0 ? '50%' : `${50 - w}%`, width: `${w}%`, background: v >= 0 ? 'var(--good)' : 'var(--bad)' } })));
   }));
 }

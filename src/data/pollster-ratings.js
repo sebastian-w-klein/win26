@@ -10,6 +10,8 @@
 //         Democratic performance
 // called  share of races where the firm called the winner
 // err     average error on the margin, in points
+// miss    share of rated polls that landed outside their own margin of error
+// apm     Advanced Plus-Minus: measured past accuracy, negative is better
 // ovr     gameplay rating: the ppm-derived rating reverted toward the card's
 //         editorial rating by poll count
 
@@ -21,6 +23,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.3,
     "called": 68,
     "err": 3.7,
+    "miss": 9,
+    "apm": -2.19,
     "aapor": false,
     "banned": false,
     "ovr": 87
@@ -32,6 +36,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.32,
     "called": 61,
     "err": 6.1,
+    "miss": 32,
+    "apm": 0.06,
     "aapor": false,
     "banned": false,
     "ovr": 81
@@ -43,6 +49,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.73,
     "called": 83,
     "err": 5.4,
+    "miss": 27,
+    "apm": -0.84,
     "aapor": false,
     "banned": false,
     "ovr": 84
@@ -54,6 +62,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.65,
     "called": 83,
     "err": 4.1,
+    "miss": 25,
+    "apm": -1.58,
     "aapor": false,
     "banned": false,
     "ovr": 82
@@ -65,6 +75,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.49,
     "called": 0,
     "err": 12.3,
+    "miss": 100,
+    "apm": 3.48,
     "aapor": false,
     "banned": false,
     "ovr": 81
@@ -76,6 +88,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.19,
     "called": 74,
     "err": 2.2,
+    "miss": 0,
+    "apm": -2.03,
     "aapor": false,
     "banned": false,
     "ovr": 84
@@ -87,6 +101,8 @@ export const POLLSTER_RATINGS = {
     "bias": -1.28,
     "called": 67,
     "err": 5.5,
+    "miss": 23,
+    "apm": -0.93,
     "aapor": true,
     "banned": false,
     "ovr": 86
@@ -98,6 +114,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.61,
     "called": 65,
     "err": 6.3,
+    "miss": 23,
+    "apm": 0.54,
     "aapor": false,
     "banned": false,
     "ovr": 78
@@ -109,6 +127,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.07,
     "called": 33,
     "err": 4.2,
+    "miss": 33,
+    "apm": -1.48,
     "aapor": false,
     "banned": false,
     "ovr": 79
@@ -120,6 +140,8 @@ export const POLLSTER_RATINGS = {
     "bias": 2.18,
     "called": 59,
     "err": 4.5,
+    "miss": 13,
+    "apm": -0.53,
     "aapor": true,
     "banned": false,
     "ovr": 86
@@ -131,6 +153,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.8,
     "called": 68,
     "err": 6.8,
+    "miss": 40,
+    "apm": -0.42,
     "aapor": false,
     "banned": false,
     "ovr": 80
@@ -142,6 +166,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.06,
     "called": 67,
     "err": 3.8,
+    "miss": 0,
+    "apm": -2.59,
     "aapor": false,
     "banned": false,
     "ovr": 77
@@ -153,6 +179,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.63,
     "called": 73,
     "err": 4.3,
+    "miss": 15,
+    "apm": -2.16,
     "aapor": false,
     "banned": false,
     "ovr": 79
@@ -164,6 +192,8 @@ export const POLLSTER_RATINGS = {
     "bias": -1.7,
     "called": 69,
     "err": 7.4,
+    "miss": 34,
+    "apm": 2.28,
     "aapor": false,
     "banned": false,
     "ovr": 72
@@ -175,6 +205,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.35,
     "called": 77,
     "err": 4.4,
+    "miss": 13,
+    "apm": -1.7,
     "aapor": false,
     "banned": false,
     "ovr": 79
@@ -186,6 +218,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.36,
     "called": 79,
     "err": 5.4,
+    "miss": 29,
+    "apm": -0.29,
     "aapor": false,
     "banned": false,
     "ovr": 79
@@ -197,6 +231,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.04,
     "called": 71,
     "err": 6.1,
+    "miss": 25,
+    "apm": -0.42,
     "aapor": false,
     "banned": false,
     "ovr": 78
@@ -208,6 +244,8 @@ export const POLLSTER_RATINGS = {
     "bias": 2.04,
     "called": 94,
     "err": 3.9,
+    "miss": 14,
+    "apm": -1.68,
     "aapor": false,
     "banned": false,
     "ovr": 87
@@ -219,6 +257,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.59,
     "called": 76,
     "err": 5.8,
+    "miss": 37,
+    "apm": 0.56,
     "aapor": false,
     "banned": false,
     "ovr": 74
@@ -230,6 +270,8 @@ export const POLLSTER_RATINGS = {
     "bias": 2.68,
     "called": 75,
     "err": 6.3,
+    "miss": 34,
+    "apm": 0.8,
     "aapor": true,
     "banned": false,
     "ovr": 74
@@ -241,6 +283,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.87,
     "called": 81,
     "err": 5.6,
+    "miss": 22,
+    "apm": -0.95,
     "aapor": false,
     "banned": false,
     "ovr": 82
@@ -252,6 +296,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.55,
     "called": 40,
     "err": 4.1,
+    "miss": 0,
+    "apm": -0.97,
     "aapor": false,
     "banned": false,
     "ovr": 75
@@ -263,6 +309,8 @@ export const POLLSTER_RATINGS = {
     "bias": 1.23,
     "called": 47,
     "err": 3.9,
+    "miss": 25,
+    "apm": -0.39,
     "aapor": false,
     "banned": false,
     "ovr": 76
@@ -274,6 +322,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.69,
     "called": 58,
     "err": 7.6,
+    "miss": 50,
+    "apm": 1.26,
     "aapor": false,
     "banned": false,
     "ovr": 73
@@ -285,6 +335,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.24,
     "called": 100,
     "err": 3.4,
+    "miss": 33,
+    "apm": -3.16,
     "aapor": false,
     "banned": false,
     "ovr": 72
@@ -296,6 +348,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.52,
     "called": 100,
     "err": 3.8,
+    "miss": 0,
+    "apm": -0.77,
     "aapor": false,
     "banned": false,
     "ovr": 76
@@ -307,6 +361,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.54,
     "called": 61,
     "err": 5.5,
+    "miss": 11,
+    "apm": 0.52,
     "aapor": false,
     "banned": false,
     "ovr": 75
@@ -318,6 +374,8 @@ export const POLLSTER_RATINGS = {
     "bias": -0.16,
     "called": 75,
     "err": 8.1,
+    "miss": 50,
+    "apm": -0.91,
     "aapor": false,
     "banned": false,
     "ovr": 73
@@ -329,6 +387,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.96,
     "called": 100,
     "err": 6.2,
+    "miss": 22,
+    "apm": 0.44,
     "aapor": false,
     "banned": false,
     "ovr": 71
@@ -340,6 +400,8 @@ export const POLLSTER_RATINGS = {
     "bias": -2.69,
     "called": 69,
     "err": 5.5,
+    "miss": 42,
+    "apm": -0.07,
     "aapor": false,
     "banned": false,
     "ovr": 76
@@ -351,6 +413,8 @@ export const POLLSTER_RATINGS = {
     "bias": 0.43,
     "called": 66,
     "err": 5,
+    "miss": 21,
+    "apm": -0.81,
     "aapor": false,
     "banned": false,
     "ovr": 84
@@ -362,8 +426,166 @@ export const POLLSTER_RATINGS = {
     "bias": 1.28,
     "called": 73,
     "err": 5.2,
+    "miss": 40,
+    "apm": 0.74,
     "aapor": false,
     "banned": false,
     "ovr": 75
+  },
+  "OnMessage Inc.": {
+    "grade": "A",
+    "polls": 32,
+    "ppm": -0.85,
+    "bias": -1.23,
+    "called": 81,
+    "err": 3.3,
+    "miss": 13,
+    "apm": -2.02,
+    "aapor": false,
+    "banned": false,
+    "ovr": 87
+  },
+  "Moore Information Group": {
+    "grade": "B/C",
+    "polls": 18,
+    "ppm": 0.49,
+    "bias": -1.56,
+    "called": 64,
+    "err": 6.7,
+    "miss": 22,
+    "apm": 0.57,
+    "aapor": false,
+    "banned": false,
+    "ovr": 75
+  },
+  "EMC Research": {
+    "grade": "B/C",
+    "polls": 15,
+    "ppm": 0.77,
+    "bias": 1.11,
+    "called": 63,
+    "err": 6.2,
+    "miss": 27,
+    "apm": 1.34,
+    "aapor": false,
+    "banned": false,
+    "ovr": 73
+  },
+  "Grove Insight": {
+    "grade": "A/B",
+    "polls": 29,
+    "ppm": -0.52,
+    "bias": 0.47,
+    "called": 90,
+    "err": 3,
+    "miss": 7,
+    "apm": -2.51,
+    "aapor": false,
+    "banned": false,
+    "ovr": 81
+  },
+  "FM3 Research": {
+    "grade": "B/C",
+    "polls": 11,
+    "ppm": 1.18,
+    "bias": 1.84,
+    "called": 68,
+    "err": 8.4,
+    "miss": 45,
+    "apm": 3.45,
+    "aapor": false,
+    "banned": false,
+    "ovr": 73
+  },
+  "Wick": {
+    "grade": "B/C",
+    "polls": 16,
+    "ppm": 0.18,
+    "bias": -1.19,
+    "called": 63,
+    "err": 4.2,
+    "miss": 25,
+    "apm": 0.01,
+    "aapor": false,
+    "banned": false,
+    "ovr": 76
+  },
+  "Trafalgar Group": {
+    "grade": "B",
+    "polls": 143,
+    "ppm": 0.18,
+    "bias": -1.88,
+    "called": 68,
+    "err": 4.3,
+    "miss": 29,
+    "apm": 0.18,
+    "aapor": false,
+    "banned": false,
+    "ovr": 78
+  },
+  "InsiderAdvantage": {
+    "grade": "B+",
+    "polls": 208,
+    "ppm": -0.04,
+    "bias": 0.32,
+    "called": 71,
+    "err": 6.1,
+    "miss": 33,
+    "apm": -0.15,
+    "aapor": false,
+    "banned": false,
+    "ovr": 81
+  },
+  "RMG Research": {
+    "grade": "B",
+    "polls": 28,
+    "ppm": 0.2,
+    "bias": 3.25,
+    "called": 75,
+    "err": 5.9,
+    "miss": 46,
+    "apm": -0.05,
+    "aapor": false,
+    "banned": false,
+    "ovr": 76
+  },
+  "Big Data Poll": {
+    "grade": "F",
+    "polls": 6,
+    "ppm": 0.51,
+    "bias": -0.34,
+    "called": 50,
+    "err": 3.9,
+    "miss": 33,
+    "apm": 0.47,
+    "aapor": false,
+    "banned": true,
+    "ovr": 67
+  },
+  "Selzer": {
+    "grade": "B+",
+    "polls": 59,
+    "ppm": -0.18,
+    "bias": 1.27,
+    "called": 78,
+    "err": 5.7,
+    "miss": 27,
+    "apm": -0.02,
+    "aapor": true,
+    "banned": false,
+    "ovr": 83
+  },
+  "Mason-Dixon Polling & Strategy": {
+    "grade": "A-",
+    "polls": 446,
+    "ppm": -0.44,
+    "bias": -0.5,
+    "called": 86,
+    "err": 5.1,
+    "miss": 23,
+    "apm": -0.61,
+    "aapor": false,
+    "banned": false,
+    "ovr": 85
   }
 };

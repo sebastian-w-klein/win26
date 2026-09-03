@@ -245,6 +245,23 @@ pl('co/efficient', 'co/efficient', 'R', 'maga-populist libertarian-r', 'co/effic
 pl('Meeting Street Insights', 'Meeting Street', 'R', 'fusionist-con social-conservative', 'Meeting Street Insights', 'senior rural', 'Republican survey research firm founded by Neil Newhouse alumni');
 pl('McLaughlin & Associates', 'McLaughlin & Associates', 'R', 'maga-populist social-conservative', 'McLaughlin & Associates', 'rural latino', 'A Trump campaign pollster across multiple cycles');
 
+/* Rated firms the pool used to miss. The last three carry the deepest public
+ * records in the whole slot — Mason-Dixon 446 rated polls, InsiderAdvantage
+ * 208, Trafalgar 143 — so their OVR is almost entirely Silver Bulletin's
+ * number and almost none of anybody's opinion. */
+pl('Grove Insight', 'Grove Insight', 'D', 'mainstream-prog liberal-inst labor-liberal', 'Grove Insight', 'union persuasion', 'Democratic opinion research firm based in Portland, Oregon');
+pl('EMC Research', 'EMC Research', 'D', 'multiracial-coalition mainstream-prog', 'EMC Research', 'latino turnout', 'Democratic survey firm working campaigns and ballot measures out of Oakland and Seattle');
+pl('FM3 Research', 'FM3 Research', 'D', 'abundance-mod liberal-inst multiracial-coalition', 'FM3 Research', 'latino suburban', 'Fairbank, Maslin, Maullin, Metz & Associates, the California Democratic survey firm');
+pl('Wes Anderson', 'OnMessage Inc.', 'R', 'fusionist-con maga-populist social-conservative', 'OnMessage Inc.', 'rural noncollege', 'Founding partner of OnMessage Inc., the Republican polling and media firm');
+pl('Moore Information Group', 'Moore Information', 'R', 'fusionist-con security-hawk', 'Moore Information Group', 'rural senior', 'Republican survey research firm founded in Portland, Oregon');
+pl('Wick', 'Wick', 'R', 'tech-right fusionist-con', 'Wick', 'analytics young', 'Republican survey research and voter analytics firm');
+pl('Trafalgar Group', 'The Trafalgar Group', 'R', 'maga-populist libertarian-r', 'Trafalgar Group', 'rural outsider', 'The Republican polling firm founded by Robert Cahaly, known for its low-response-rate methods');
+pl('InsiderAdvantage', 'InsiderAdvantage', 'R', 'maga-populist fusionist-con', 'InsiderAdvantage', 'rural earned-media', 'Atlanta polling firm founded by Matt Towery');
+pl('RMG Research', 'RMG Research', 'R', 'tech-right libertarian-r', 'RMG Research', 'analytics outsider', 'The survey firm founded by Scott Rasmussen');
+pl('Big Data Poll', 'Big Data Poll', 'R', 'maga-populist libertarian-r', 'Big Data Poll', 'outsider viral', 'Republican-aligned polling outfit run by Rich Baris');
+pl('Ann Selzer', 'Selzer & Co.', 'X', '', 'Selzer', 'rural analytics', 'The Iowa pollster whose Des Moines Register survey was a generation-long benchmark');
+pl('Mason-Dixon', 'Mason-Dixon Polling & Strategy', 'X', '', 'Mason-Dixon Polling & Strategy', 'senior persuasion', 'Independent survey research firm polling statewide races since the 1980s');
+
 /* ── 21. GENERAL COUNSEL ────────────────────────────────────────────────── */
 o('general-counsel', 'Marc Elias', 'Elias Law Group', 'D', 'prog-populist mainstream-prog liberal-inst abundance-mod', 92, 'legal analytics', "The Democratic Party's principal election lawyer");
 o('general-counsel', 'Bob Bauer', 'NYU Law', 'D', 'liberal-inst abundance-mod', 87, 'legal persuasion', 'White House counsel under Obama; personal counsel to Joe Biden');
@@ -560,7 +577,8 @@ export const FIRM_GROUPS = {
   redcurve:      { label: 'Red Curve Solutions',       names: ['Brad Crate'] },
   turningpoint:  { label: 'Turning Point',             names: ['Turning Point Action', 'Turning Point Faith'] },
   afpi:          { label: 'America First Policy Institute', names: ['America First Policy Institute', 'Hogan Gidley'] },
-  targetedvic:   { label: 'Targeted Victory',          names: ['Targeted Victory', 'Matt Gorman'] }
+  targetedvic:   { label: 'Targeted Victory',          names: ['Targeted Victory', 'Matt Gorman'] },
+  onmessage:     { label: 'OnMessage Inc.',            names: ['OnMessage Inc.', 'Wes Anderson'] }
 };
 
 for (const [id, g] of Object.entries(FIRM_GROUPS)) {
@@ -575,6 +593,51 @@ for (const [id, g] of Object.entries(FIRM_GROUPS)) {
 const EXTRA_LANES = {"labor-liberal": ["Rebecca Katz", "Annie Wu Henry", "Devine Mulvey Longabaugh", "AFL-CIO", "Culinary Union Local 226", "Brendan McPhillips", "Celinda Lake", "Mike Donilon", "Faiz Shakir", "Jeff Weaver", "Mark Putnam", "Warren Gunnels", "SEIU", "Ben Tulchin", "John Anzalone", "Jenn Ridder", "Greg Schultz"], "multiracial-coalition": ["Quentin Fulks", "Marlon Marshall", "Jeremy Bird", "Emmy Ruiz", "Cedric Richmond", "Michael Tyler", "Symone Sanders Townsend", "SEIU", "Working Families Party", "Catalist", "Karine Jean-Pierre", "ActBlue", "Marc Elias", "Nina Turner", "Analilia Mejia", "Geoff Garin", "Betsy Hoover", "Rob Flaherty"], "security-hawk": ["Karl Rove", "Stuart Stevens", "Sarah Longwell", "Tim Miller", "Kristen Soltis Anderson", "Charlie Spies", "Katie Walsh Shields", "Sean Cairncross", "Echelon Insights", "Consovoy McCarthy", "National Media", "Something Else Strategies", "Poolhouse", "Glen Bolger", "Todd Ricketts", "Delve", "Sarah Matthews", "Brendan Buck"], "social-conservative": ["Faith & Freedom Coalition", "The Heritage Foundation", "Jamestown Associates", "Sentinel Action Fund", "Cleta Mitchell", "National Rifle Association", "RNC Ground Game", "Hogan Gidley", "Tim Murtaugh", "John McLaughlin", "Alex Latcham", "Chris Carr", "Nick Trainer", "Richard Walters"]};
 for (const [lane, names] of Object.entries(EXTRA_LANES))
   for (const p of P) if (names.includes(p.name) && !p.lanes.includes(lane)) p.lanes.push(lane);
+
+// The three newest coalition axes need tags of their own, and they are added
+// here rather than inline so the reasoning stays in one place.
+//
+//   noncollege  works non-college white turf for a living: labor organizers,
+//               rust-belt strategists, rural admen, the Trump field operation
+//   affluent    the donor-and-suburb operation: bundlers, big-check finance
+//               directors, the firms that live off six-figure retainers
+//   outsider    can talk to voters who have quit both parties: anti-party
+//               media, movement groups, the libertarian institutions
+const EXTRA_SPECS = {
+  noncollege: [
+    'Faiz Shakir', 'Jeff Weaver', 'Rebecca Katz', 'Mike Donilon', 'Ari Rabin-Havt',
+    'AFL-CIO', 'UAW', 'Teamsters', 'SEIU', 'UNITE HERE', 'Warren Gunnels',
+    'Devine Mulvey Longabaugh', 'AL Media', 'John Anzalone', 'GBAO', 'Celinda Lake',
+    'Brendan McPhillips', 'American Compass', 'Economic Policy Institute',
+    'Chris LaCivita', 'Susie Wiles', 'Steve Bannon', 'Bill Stepien', 'Alex Latcham',
+    'Tim Murtaugh', 'Jamestown Associates', 'Dan Scavino', 'Tony Fabrizio',
+    'Susquehanna Polling & Research', 'National Rifle Association', 'Adam Geller'
+  ],
+  affluent: [
+    'Jim Messina', 'Anita Dunn', 'Karl Rove', 'SKDK', 'Rufus Gifford', 'Chris Korge',
+    'Julianna Smoot', 'Katie Petrelius', 'EMILYs List', 'Perkins Coie', 'Bob Bauer',
+    'Meredith O\'Rourke', 'Todd Ricketts', 'Ron Weiser', 'Brad Crate', 'Charlie Spies',
+    'Jones Day', 'Club for Growth', 'Jared Kushner', 'Sergio Gor', 'Nick Ayers',
+    'Waterfront Strategies', 'National Media', 'Canal Partners Media', 'Sean Cairncross',
+    'Whit Ayres', 'Public Opinion Strategies', 'Stuart Stevens', 'Sarah Longwell'
+  ],
+  outsider: [
+    'Steve Bannon', 'Nina Turner', 'Waleed Shahid', 'Working Families Party',
+    'Data for Progress', 'Faiz Shakir', 'Hasan Piker', 'Indivisible',
+    'Cato Institute', 'Niskanen Center', 'Americans for Prosperity', 'Club for Growth',
+    'Benny Johnson', 'The Daily Wire', 'Alex Bruesewitz', 'co/efficient', 'Fred Davis',
+    'Turning Point Action', 'Early Vote Action', 'Corey Lewandowski',
+    'Sarah Longwell', 'Tim Miller', 'Stuart Stevens', 'Rick Wilson', 'Mark McKinnon',
+    'Republican Accountability', 'Trevor Potter', 'Rachel Janfaza'
+  ]
+};
+for (const [tag, names] of Object.entries(EXTRA_SPECS)) {
+  for (const name of names) {
+    const hits = P.filter(p => p.name === name);
+    if (!hits.length) throw new Error(`spec "${tag}" names "${name}", which is not in the pool`);
+    for (const p of hits) if (!p.specs.includes(tag)) p.specs.push(tag);
+  }
+}
 
 /* ── derived fields ─────────────────────────────────────────────────────── */
 

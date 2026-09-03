@@ -38,11 +38,14 @@ export function renderResults(root, app, league, meIdx = 0) {
   const stateTable = () => {
     const rows = showAll ? stateRows : stateRows.filter(s => BATTLEGROUNDS[s.st.abbr] || Math.abs(s.margin) < 6);
     return h('div.scroll-x', h('table.tbl',
-      h('thead', h('tr', h('th', 'State'), h('th.num', 'EV'), h('th.num', 'Lean'), h('th.num', 'Margin'), h('th.num', 'Win %'), h('th.num', 'Coalition'), h('th.num', 'Operation'), h('th', ''))),
+      h('thead', h('tr', h('th', 'State'), h('th.num', 'EV'), h('th.num', 'Lean'),
+        h('th.num', { title: 'How far this state\u2019s counties have moved from cycle to cycle since 2012, with 1.00 as the national average. Coalition and Operation are both multiplied by it.' }, 'Elastic'),
+        h('th.num', 'Margin'), h('th.num', 'Win %'), h('th.num', 'Coalition'), h('th.num', 'Operation'), h('th', ''))),
       h('tbody', rows.map(s => h('tr',
         h('td', h('b', s.st.name), BATTLEGROUNDS[s.st.abbr] && h('div.tiny.faint', BATTLEGROUNDS[s.st.abbr].note)),
         h('td.num', s.st.ev),
         h('td.num.dim', (s.st.lean >= 0 ? 'D+' : 'R+') + Math.abs(s.st.lean).toFixed(1)),
+        h('td.num.dim', s.st.elasticity.toFixed(2) + '\u00d7'),
         h('td.num', { style: { color: s.margin > 2 ? 'var(--good)' : s.margin > 0 ? '#86efac' : s.margin > -2 ? '#fca5a5' : 'var(--bad)', fontWeight: 700 } }, fmt(s.margin)),
         h('td.num', (s.p * 100).toFixed(0) + '%'),
         h('td.num.dim', fmt(s.coalition)), h('td.num.dim', fmt(s.ops)),
